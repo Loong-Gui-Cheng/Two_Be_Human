@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e71cecc6a6e53c848abcbdf01ec7bb86, type: 3}
   m_Name: EnemyOne
   m_EditorClassIdentifier: 
+  id: 0
+  Name: 
+  Level: 0
   MaxHP: 0
   HP: 0
   ATK: 0
   DEF: 0
+  minSPD: 2
+  maxSPD: 6
   SPD: 0
   idleSprite: {fileID: 0}
   atkSprite: {fileID: 0}

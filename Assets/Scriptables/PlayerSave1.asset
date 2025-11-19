@@ -19,6 +19,13 @@ MonoBehaviour:
   teamLevel: 0
   teamEXP: 0
   teamAvailablePoints: 0
-  characters: []
-  combatCharacters: []
+  characters:
+  - {fileID: 11400000, guid: c35ed6e1b6b2c1c47a8638b41dc54fec, type: 2}
+  - {fileID: 11400000, guid: b4051a10c7d5f6741a11360edd6d76fc, type: 2}
+  - {fileID: 11400000, guid: d9bbfb4a2c3b1094b9b152102004aa76, type: 2}
+  - {fileID: 11400000, guid: ca510204991145745aa60c6ff72229d6, type: 2}
+  combatCharacters:
+  - {fileID: 11400000, guid: ca510204991145745aa60c6ff72229d6, type: 2}
+  - {fileID: 11400000, guid: c35ed6e1b6b2c1c47a8638b41dc54fec, type: 2}
+  - {fileID: 11400000, guid: d9bbfb4a2c3b1094b9b152102004aa76, type: 2}
   inventory: 0

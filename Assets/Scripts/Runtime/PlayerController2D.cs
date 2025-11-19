@@ -5,7 +5,6 @@ using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
-using UnityEngine.Windows;
 
 [RequireComponent(typeof(PlayerInput), typeof(BoxCollider2D), typeof(Animator))]
 public class PlayerController2D : MonoBehaviour
@@ -29,15 +28,18 @@ public class PlayerController2D : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction moveAction;
     private InputAction interactAction;
+    private InputAction menuAction;
 
     // Player States
-    private bool isMenu;
-    private bool isMoving;
+    private bool IsInMenu;
+    private bool IsMoving;
 
     private IInteractable interactable;
 
     public static System.Action<Vector3> IsPlayerNear;
     public static System.Action InteractObject;
+
+    public static event System.Action<bool> OnToggleMenu;
 
     private void OnEnable()
     {
@@ -51,8 +53,14 @@ public class PlayerController2D : MonoBehaviour
         playerInput.actions.Enable();
 
         moveAction = playerInput.actions["Move"];
+        interactAction = playerInput.actions["Interact"];
+        menuAction = playerInput.actions["Menu"];
     }
-    private void OnDisable() => playerInput.actions.Disable();
+    private void OnDisable()
+    {
+        playerInput.actions.Disable();
+    }
+
 
     private void Update()
     {
@@ -62,42 +70,51 @@ public class PlayerController2D : MonoBehaviour
             return;
         }
 
-        if (!isMenu && moveAction.IsInProgress())
+        MenuControl();
+        MoveControl();
+        InteractControl();
+    }
+
+
+    private void MenuControl()
+    {
+        if (menuAction.WasPressedThisFrame())
         {
-            Move();
+            IsInMenu = !IsInMenu;
+            OnToggleMenu?.Invoke(IsInMenu);
+        }
+    }
+
+
+    private void MoveControl()
+    {
+        if (IsInMenu) return;
+        if (moveAction.IsInProgress())
+        {
+            Vector2 input = moveAction.ReadValue<Vector2>();
+            float spdMultiplier = speed * Time.deltaTime;
+
+            Vector2 moveDirection = new(input.x, input.y);
+            if (CanMove(moveDirection))
+            {
+                if (moveDirection.x < 0f) { spriteRenderer.flipX = true; }
+                else if (moveDirection.x > 0f) { spriteRenderer.flipX = false; }
+
+                //animator.Play("Move");
+                IsPlayerNear?.Invoke(transform.position);
+            }
+            animator.SetBool(IsMovingHash, true);
+            animator.SetFloat(AXHash, input.x);
+            animator.SetFloat(AYHash, input.y);
         }
         else
         {
             animator.SetBool(IsMovingHash, false);
         }
-
-
-        if (interactable != null && interactAction.WasPressedThisFrame())
-            InteractObject?.Invoke();
-    }
-
-    private void Move()
-    {
-        Vector2 input = moveAction.ReadValue<Vector2>();
-        float spdMultiplier = speed * Time.deltaTime;
-
-        Vector2 moveDirection = new(input.x, input.y);
-        if (CanMove(moveDirection))
-        {
-            if (moveDirection.x < 0f) { spriteRenderer.flipX = true; }
-            else if (moveDirection.x > 0f) { spriteRenderer.flipX = false; }
-
-            //animator.Play("Move");
-            IsPlayerNear?.Invoke(transform.position);
-        }
-
-        animator.SetBool(IsMovingHash, true);
-        animator.SetFloat(AXHash, input.x);
-        animator.SetFloat(AYHash, input.y);
     }
     private bool CanMove(Vector2 direction)
     {
-        if (isMoving) 
+        if (IsMoving)
             return false;
 
         if (direction.x != 0f && direction.y != 0f)
@@ -117,7 +134,7 @@ public class PlayerController2D : MonoBehaviour
     }
     private IEnumerator MoveRoutine(Vector3 direction)
     {
-        isMoving = true;
+        IsMoving = true;
 
         Vector3 finalPos = transform.position + direction;
         while ((finalPos - transform.position).sqrMagnitude > Mathf.Epsilon)
@@ -126,8 +143,17 @@ public class PlayerController2D : MonoBehaviour
             yield return null;
         }
 
-        isMoving = false;
+        IsMoving = false;
         yield break;
+    }
+
+
+    private void InteractControl()
+    {
+        if (interactable == null) return;
+
+        if (interactAction.WasPressedThisFrame())
+            InteractObject?.Invoke();
     }
 }
 

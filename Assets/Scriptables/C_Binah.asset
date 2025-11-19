@@ -10,14 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 468a1d9558b827e4187e5d97c666de5a, type: 3}
-  m_Name: CharacterOne
+  m_Name: C_Binah
   m_EditorClassIdentifier: 
-  MaxHP: 0
-  HP: 0
-  ATK: 0
-  DEF: 0
-  SPD: 1
+  id: 3
+  Name: Binah
+  Level: 129
+  MaxHP: 490
+  HP: 234
+  ATK: 66
+  DEF: 66
+  minSPD: 2
+  maxSPD: 5
+  SPD: 6
   slot: 0
+  portrait: {fileID: 21300000, guid: cf39f73231668ac4da9e50dfbf2dfa56, type: 3}
   idleSprite: {fileID: 0}
   atkSprite: {fileID: 0}
   clashSprite: {fileID: 0}

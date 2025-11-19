@@ -1,8 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class MainMenuManager : MonoBehaviour
+public class MainUIManager : MonoBehaviour
 {
     private enum CanvasID
     {
@@ -14,8 +17,9 @@ public class MainMenuManager : MonoBehaviour
     [Header("UI/UX Menu Canvas")]
     [SerializeField, CE_ReadOnly] private CanvasID activeCanvasID;
     [SerializeField] private List<Canvas> menuCanvas;
+    [SerializeField] private Image splashArt_BG;
 
-    private static readonly Dictionary<CanvasID, Canvas> menuCanvasMap = new();
+    private readonly Dictionary<CanvasID, Canvas> menuCanvasMap = new();
 
 
     private void Start()
@@ -24,6 +28,11 @@ public class MainMenuManager : MonoBehaviour
         {
             if (menuCanvasMap.TryAdd((CanvasID)i, menuCanvas[i]))
                 Debug.Log("Canvas added success!");
+        }
+
+        if (splashArt_BG != null)
+        {
+            StartCoroutine(DOTweenSplashArt());
         }
     }
 
@@ -42,6 +51,18 @@ public class MainMenuManager : MonoBehaviour
         selectedCanvas.enabled = true;
 
         activeCanvasID = cID;
+    }
+
+    public IEnumerator DOTweenSplashArt()
+    {
+        splashArt_BG.rectTransform.DOLocalMoveX(800f, 8f);
+        yield return new WaitForSeconds(8.5f);
+
+        splashArt_BG.rectTransform.DOLocalMoveX(-800f, 8f);
+        yield return new WaitForSeconds(8.5f);
+
+        StartCoroutine(DOTweenSplashArt());
+        yield break;
     }
     public void QuitGame()
     {

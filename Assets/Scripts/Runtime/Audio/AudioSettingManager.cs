@@ -19,21 +19,18 @@ public class AudioSettingsConfig
     public float fmasterVolume;
     public float fmasterMusic;
     public float fmasterSoundSFX;
-    public float fmasterAmbience;
 
     public void Awake()
     {
         fmasterVolume = 0f;
         fmasterMusic = 0f;
         fmasterSoundSFX = 0f;
-        fmasterAmbience = 0f;
     }
     public AudioSettingsConfig(AudioSettingsConfig saveable)
     {
         fmasterVolume = saveable.fmasterVolume;
         fmasterMusic = saveable.fmasterMusic;
         fmasterSoundSFX = saveable.fmasterSoundSFX;
-        fmasterAmbience = saveable.fmasterAmbience;
     }
 }
 
@@ -73,7 +70,6 @@ public class AudioSettingManager : MonoBehaviour, ISaveable
     [SerializeField] private AudioSlider masterVolume;
     [SerializeField] private AudioSlider masterBGM;
     [SerializeField] private AudioSlider masterSFX;
-    [SerializeField] private AudioSlider masterAmbience;
 
     private void Start()
     {
@@ -98,18 +94,11 @@ public class AudioSettingManager : MonoBehaviour, ISaveable
         masterSFX.UpdateUI();
     }
 
-    public void SetAmbienceVolume()
-    {
-        audioMixer.SetFloat("Ambience", masterAmbience.slider.value);
-        masterAmbience.UpdateUI();
-    }
-
     public void Save()
     {
         config.fmasterVolume = masterVolume.slider.value;
         config.fmasterMusic = masterBGM.slider.value;
         config.fmasterSoundSFX = masterSFX.slider.value;
-        config.fmasterAmbience = masterAmbience.slider.value;
 
         AudioSaveSystem.SaveAudioSettings(config);
     }
@@ -123,19 +112,16 @@ public class AudioSettingManager : MonoBehaviour, ISaveable
             masterVolume.slider.value = data.fmasterVolume;
             masterBGM.slider.value = data.fmasterMusic;
             masterSFX.slider.value = data.fmasterSoundSFX;
-            masterAmbience.slider.value = data.fmasterAmbience;
         }
         else
         {
             masterVolume.slider.value = config.fmasterVolume;
             masterBGM.slider.value = config.fmasterMusic;
             masterSFX.slider.value = config.fmasterSoundSFX;
-            masterAmbience.slider.value = config.fmasterAmbience;
         }
 
         masterVolume.UpdateUI();
         masterBGM.UpdateUI();
         masterSFX.UpdateUI();
-        masterAmbience.UpdateUI();
     }
 }
