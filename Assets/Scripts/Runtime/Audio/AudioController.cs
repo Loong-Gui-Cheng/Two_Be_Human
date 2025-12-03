@@ -29,19 +29,60 @@ public class AudioController : Singleton<AudioController>
         DIALOGUE_CLICK = 1,
         ERROR = 2,
         SUCCESS = 3,
-        SUBMIT_SWEEP = 4,
-        LIGHT_TOGGLE = 5,
-        QUEST_LINE_ACQUIRED = 6,
-        QUEST_LINE_COMPLETE = 7,
-        DING = 8,
-        ALERT = 9
+
+
+        TURN_START = 30,
+        FINGER_SNAP = 31,
+        COIN_WIN = 32,
+        COIN_FAIL = 33,
+        INITIATE_BATTLE = 34,
+        PARRY_SMALL_1 = 35,
+        PARRY_SMALL_2 = 36,
+        PARRY_SMALL_3 = 37,
+        PARRY_DRAW = 38,
+        PARRY_WIN = 39,
+
+        SLASH = 50,
+        BLUNT = 51,
+        PIERCE = 52,
+        MAGIC = 53,
+        CRITICAL = 54,
+
+        DEAD = 60,
+        ROUND_WIN = 61,
+        ROUND_LOSE = 62
     }
 
     [Header("Audio Singleton Settings")]
     [SerializeField] private bool shouldCycleBGM;
     [SerializeField] private List<AudioClip> BGMList;
-    [SerializeField] private List<AudioClip> SFX_UI_List;
     [SerializeField] private GameObject m_SoundBubble;
+
+    [Header("Audio SFX")]
+    [SerializeField] private AudioClip SFX_ActionSelect;
+
+    [SerializeField] private AudioClip SFX_TurnStart;
+    [SerializeField] private AudioClip SFX_FingerSnap;
+    [SerializeField] private AudioClip UI_CoinWin;
+    [SerializeField] private AudioClip UI_CoinFail;
+    [SerializeField] private AudioClip UI_InitiateBattle;
+
+
+    [SerializeField] private AudioClip SFX_ParrySmallOne;
+    [SerializeField] private AudioClip SFX_ParrySmallTwo;
+    [SerializeField] private AudioClip SFX_ParrySmallThree;
+    [SerializeField] private AudioClip SFX_ParryDraw;
+    [SerializeField] private AudioClip SFX_ParryWin;
+
+    [SerializeField] private AudioClip SFX_Slash;
+    [SerializeField] private AudioClip SFX_Pierce;
+    [SerializeField] private AudioClip SFX_Blunt;
+    [SerializeField] private AudioClip SFX_Critical;
+
+    [SerializeField] private AudioClip SFX_Dead;
+    [SerializeField] private AudioClip UI_RoundWin;
+    [SerializeField] private AudioClip UI_RoundLose;
+
 
     // Sound Pooling
     private float beforeSamples = 1f;
@@ -49,7 +90,7 @@ public class AudioController : Singleton<AudioController>
     private AudioSource m_BGMSrc;
 
     private readonly List<AudioSource> SFXSrcPool = new();
-    private readonly Dictionary<int, AudioClip> SFX_UI_Map = new();
+    private readonly Dictionary<int, AudioClip> SFX_2D_MAP = new();
 
     public override void Awake()
     {
@@ -72,11 +113,28 @@ public class AudioController : Singleton<AudioController>
         }
 
         // Add to hash map for performance.
-        for (int i = 0; i < SFX_UI_List.Count; i++)
-        {
-            if (SFX_UI_List[i] != null)
-                SFX_UI_Map.Add(i, SFX_UI_List[i]);
-        }
+        SFX_2D_MAP.Add((int)SOUND_ID.CLICK, SFX_ActionSelect);
+
+        SFX_2D_MAP.Add((int)SOUND_ID.TURN_START, SFX_TurnStart);
+        SFX_2D_MAP.Add((int)SOUND_ID.FINGER_SNAP, SFX_FingerSnap);
+        SFX_2D_MAP.Add((int)SOUND_ID.COIN_WIN, UI_CoinWin);
+        SFX_2D_MAP.Add((int)SOUND_ID.COIN_FAIL, UI_CoinFail);
+        SFX_2D_MAP.Add((int)SOUND_ID.INITIATE_BATTLE, UI_InitiateBattle);
+
+        SFX_2D_MAP.Add((int)SOUND_ID.PARRY_SMALL_1, SFX_ParrySmallOne);
+        SFX_2D_MAP.Add((int)SOUND_ID.PARRY_SMALL_2, SFX_ParrySmallTwo);
+        SFX_2D_MAP.Add((int)SOUND_ID.PARRY_SMALL_3, SFX_ParrySmallThree);
+        SFX_2D_MAP.Add((int)SOUND_ID.PARRY_DRAW, SFX_ParryDraw);
+        SFX_2D_MAP.Add((int)SOUND_ID.PARRY_WIN, SFX_ParryWin);
+
+        SFX_2D_MAP.Add((int)SOUND_ID.SLASH, SFX_Slash);
+        SFX_2D_MAP.Add((int)SOUND_ID.BLUNT, SFX_Blunt);
+        SFX_2D_MAP.Add((int)SOUND_ID.PIERCE, SFX_Pierce);
+        SFX_2D_MAP.Add((int)SOUND_ID.CRITICAL, SFX_Critical);
+
+        SFX_2D_MAP.Add((int)SOUND_ID.DEAD, SFX_Dead);
+        SFX_2D_MAP.Add((int)SOUND_ID.ROUND_WIN, UI_RoundWin);
+        SFX_2D_MAP.Add((int)SOUND_ID.ROUND_LOSE, UI_RoundLose);
     }
 
     private void Update()
@@ -156,10 +214,10 @@ public class AudioController : Singleton<AudioController>
 
     // For UI 
     public void PlayUI(AudioClip clip) => Play2D(clip, true, false, false);
-    public void PlayUI(SOUND_ID id)
+    public void PlayUI(SOUND_ID id, bool overwriteSound = false)
     {
-        if (SFX_UI_Map.TryGetValue((int)id, out AudioClip clip))
-            Play2D(clip, true, false, false);
+        if (SFX_2D_MAP.TryGetValue((int)id, out AudioClip clip))
+            Play2D(clip, true, overwriteSound, false);
     }
 
     // For Independent Sounds
@@ -177,7 +235,7 @@ public class AudioController : Singleton<AudioController>
     }
     public void Play3D(AudioSource SFXSrc, SOUND_ID id, bool isLooping = false)
     {
-        if (SFX_UI_Map.TryGetValue((int)id, out AudioClip clip))
+        if (SFX_2D_MAP.TryGetValue((int)id, out AudioClip clip))
             Play3D(SFXSrc, clip, isLooping);
     }
 

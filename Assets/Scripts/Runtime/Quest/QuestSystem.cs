@@ -96,7 +96,7 @@ public class QuestSystem : MonoBehaviour
             m_MQuestSeriesTMP.text = m_QuestSeriesTMP.text;
             m_QuestStarterTMP.text = quest.m_QuestTitle.text;
 
-            AudioController.Instance.PlayUI(AudioController.SOUND_ID.QUEST_LINE_ACQUIRED);
+            //AudioController.Instance.PlayUI(AudioController.SOUND_ID.QUEST_LINE_ACQUIRED);
             StartCoroutine(DOTweenQuestLineRoutine(quest));
         } 
         else quest.DOTweenFadeRoutine();
@@ -162,7 +162,7 @@ public class QuestSystem : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         quest.m_QuestTitle.DOColor(m_CompletedColor, 0.5f);
-        AudioController.Instance.PlayUI(AudioController.SOUND_ID.DING);
+        //AudioController.Instance.PlayUI(AudioController.SOUND_ID.DING);
         yield return new WaitForSeconds(0.8f);
 
         quest.DOTweenFadeRoutine();
@@ -175,7 +175,7 @@ public class QuestSystem : MonoBehaviour
         {
             m_QuestSeriesTMP.text = "Quest Completed!";
             m_QuestStarterTMP.text = "You have completed all your tasks!";
-            AudioController.Instance.PlayUI(AudioController.SOUND_ID.QUEST_LINE_COMPLETE);
+            //AudioController.Instance.PlayUI(AudioController.SOUND_ID.QUEST_LINE_COMPLETE);
             StartCoroutine(DOTweenQuestLineRoutine(null));
         }
         yield break;

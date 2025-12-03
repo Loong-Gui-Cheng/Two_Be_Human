@@ -13,18 +13,26 @@ MonoBehaviour:
   m_Name: EnemyOne
   m_EditorClassIdentifier: 
   id: 0
-  Name: 
-  Level: 0
-  MaxHP: 0
-  HP: 0
-  ATK: 0
-  DEF: 0
+  Name: Abomination
+  Level: 1
+  MaxHP: 100
+  HP: 100
+  ATK: 32
+  DEF: 14
   minSPD: 2
   maxSPD: 6
   SPD: 0
-  idleSprite: {fileID: 0}
+  slashResist: 1.5
+  pierceResist: 1
+  bluntResist: 0.5
+  magicResist: 1
+  idleSprite: {fileID: -4124168217499134943, guid: f4b6fed2347140041ba604b41f5f42f7, type: 3}
   atkSprite: {fileID: 0}
   clashSprite: {fileID: 0}
-  exp: 0
-  gold: 0
+  skills:
+  - {fileID: 11400000, guid: a4de86f277efc2146a7cad628af9f245, type: 2}
+  - {fileID: 11400000, guid: cd59eae823c499447ac287f4a4000d95, type: 2}
+  - {fileID: 11400000, guid: 25d3c336adda89949bb809a0ab73ba5c, type: 2}
+  exp: 5
+  gold: 10
   equipmentDrop: []

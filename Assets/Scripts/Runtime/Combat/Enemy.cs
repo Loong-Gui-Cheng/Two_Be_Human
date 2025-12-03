@@ -1,30 +1,34 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
     [Header("Data Reference")]
-    [SerializeField] private EnemyData enemyData;
-    [SerializeField] private int countID;
-    [SerializeField] private int Level;
+    [SerializeField, CE_ReadOnly] private EnemyData data;
+    public CombatEntity entity;
 
     [Header("Runtime (Stat)")]
-    public float MaxHP;
-    public float HP;
-    public float ATK;
-    public float DEF;
-    [SerializeField] private int SPD;
+    public int Level;
+    public int countID;
 
-    public Enemy(EnemyData enemyData)
+    [Header("Action Dice")]
+    public RectTransform actionGroup;
+    public List<ActionSlot> actions;
+
+    [Header("User Interface (UI)")]
+    public HPUI hpUI;
+    public CoinUI coinUI;
+
+
+    public void Initialise(EnemyData input)
     {
-        this.enemyData = enemyData;
-        MaxHP = enemyData.MaxHP;
-        HP = enemyData.HP;
-        MaxHP = enemyData.MaxHP;
-        ATK = enemyData.ATK;
-        DEF = enemyData.DEF;
+        if (input == null) return;
+        data = input;
+
+        entity.Initialise(data);
     }
-    public void RandomiseSPD()
+    public EnemyData GetData()
     {
-        SPD = Random.Range(enemyData.minSPD, enemyData.maxSPD + 1);
+        return data;
     }
 }

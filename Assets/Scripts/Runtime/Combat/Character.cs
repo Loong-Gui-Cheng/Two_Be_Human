@@ -1,32 +1,30 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Character : MonoBehaviour
 {
     [Header("Data Reference")]
-    [SerializeField] private CharacterData characterData;
+    [SerializeField, CE_ReadOnly] private CharacterData data;
+    public CombatEntity entity;
 
-    [Header("Runtime (Stat)")]
-    public int MaxHP;
-    public int HP;
-    public int ATK;
-    public int DEF;
-    [SerializeField] private int SPD; 
+    [Header("Action Dice")]
+    public RectTransform actionGroup;
+    public List<ActionSlot> actions;
 
-    public Character(CharacterData data)
+    [Header("User Interface (UI)")]
+    public HPUI hpUI;
+    public CoinUI coinUI;
+
+
+    public void Initialise(CharacterData input)
     {
-        if (data == null) return;
-        characterData = data;
+        if (input == null) return;
+        data = input;
+
+        entity.Initialise(data);
     }
     public CharacterData GetData()
     {
-        return characterData;
-    }
-    public int GetSPD()
-    {
-        return SPD;
-    }
-    public void RandomiseSPD()
-    {
-        SPD = Random.Range(characterData.minSPD, characterData.maxSPD + 1);
+        return data;
     }
 }
