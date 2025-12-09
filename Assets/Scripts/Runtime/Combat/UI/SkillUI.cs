@@ -28,14 +28,9 @@ public class SkillUI : MonoBehaviour
     [SerializeField] private GameObject coinPrefab;
 
     public void ToggleUI(bool show) => canvas.enabled = show;
-    public void SetupUI(ActionSlot action)
+    public void SetupUI(ActionSlot action, int minPower, int maxPower)
     {
         SkillData skill = action.skillData;
-        if (skill == null)
-        {
-            canvas.enabled = false;
-            return;
-        }
 
         for (int i = coins.Count - 1; i >= 0; i--)
             Destroy(coins[i].gameObject);
@@ -44,6 +39,10 @@ public class SkillUI : MonoBehaviour
 
         minRoll_TMP.color = Color.white;
         maxRoll_TMP.color = Color.white;
+
+        minRoll_TMP.text = string.Format("{0}", minPower);
+        maxRoll_TMP.text = string.Format("{0}", maxPower);
+
         basePower_TMP.text = string.Format("{0}", skill.baseCoinPower);
         incrementPower_TMP.text = string.Format("+{0}", skill.incrementCoinPower);
         skillName_TMP.text = skill.Name;
@@ -91,14 +90,6 @@ public class SkillUI : MonoBehaviour
         else if (multiplier < 1f) multiplier_TMP.color = Color.red;
         else multiplier_TMP.color = Color.white;
     }
-    public void SetMin(Color color, int min)
-    {
-        minRoll_TMP.color = color;
-        minRoll_TMP.text = string.Format("{0}", min);
-    }
-    public void SetMax(Color color, int max)
-    {
-        maxRoll_TMP.color = color;
-        maxRoll_TMP.text = string.Format("{0}", max);
-    }
+    public void SetMinColor(Color color) => minRoll_TMP.color = color;
+    public void SetMaxColor(Color color) => maxRoll_TMP.color = color;
 }

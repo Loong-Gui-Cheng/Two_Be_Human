@@ -21,74 +21,83 @@ public class ClashUI : MonoBehaviour
     }
     public void UpdateUI(ActionSlot allySlot, ActionSlot enemySlot)
     {
+        allySkillUI.ToggleUI(false);
+        enemySkillUI.ToggleUI(false);
+
         attackResult_TMP.color = Color.white;
         attackResult_TMP.text = string.Empty;
 
-        allySkillUI.SetupUI(allySlot);
-        if (allySlot.skillData) attackResult_TMP.text = "Unopposed";
+        int aMin = 0;
+        int aMax = 0;
 
-        // Check if enemy unopposes you. (Find all enemy slot and check who attacking this.)
-
-
-        if (enemySlot == null)
+        if (allySlot.skillData != null)
         {
-            enemySkillUI.ToggleUI(false);
-            return;
+            aMin = allySlot.skillData.baseCoinPower;
+            aMax = aMin + (allySlot.skillData.incrementCoinPower * allySlot.skillData.coins);
+            allySkillUI.SetupUI(allySlot, aMin, aMax);
+            SetupMultiplierUI(allySlot, enemySlot);
+
+            attackResult_TMP.text = "Unopposed";
         }
-        enemySkillUI.SetupUI(enemySlot);
 
-        // Player to enemy
-        SetupMultiplierUI(allySlot, enemySlot);
-        // Enemy to Player
-        SetupMultiplierUI(enemySlot, allySlot);
+        // WIP: Find if enemy unopposes you on this slot. (Find all enemy slot and check who attacking this.)
+        if (enemySlot == null) return;
 
-        // Ally has action.
-
+        int bMin = 0;
+        int bMax = 0;
 
         // Opponent also has action.
         if (enemySlot.skillData != null)
         {
+            bMin = enemySlot.skillData.baseCoinPower;
+            bMax = bMin + (enemySlot.skillData.incrementCoinPower * enemySlot.skillData.coins);
+            enemySkillUI.SetupUI(enemySlot, bMin, bMax);
+            SetupMultiplierUI(enemySlot, allySlot);
+
             // Check if this action slot clashes with enemy.
             bool clashingSkills = allySlot.skillData.type == SkillData.TYPE.CLASH && enemySlot.skillData.type == SkillData.TYPE.CLASH;
-            if (clashingSkills && enemySlot.clashedBy.Count > 0)
+
+            // No skills clashes, unopposed.
+            if (!(clashingSkills && enemySlot.clashedBy.Count > 0))
             {
-                ActionSlot enemyClashID = enemySlot.clashedBy[0];
-                string allyID = allySlot.GetID();
+                attackResult_TMP.text = "Unopposed";
+                return;
+            }
 
+            ActionSlot enemyClashID = enemySlot.clashedBy[0];
+            string allyID = allySlot.GetID();
+            
+            // Ally clash matches with enemy clash by.
+            if (string.Compare(allyID, enemyClashID.GetID(), System.StringComparison.Ordinal) == 0)
+            {
                 // Compare min-max rolls of both skills
-                if (string.Compare(allyID, enemyClashID.GetID(), System.StringComparison.Ordinal) == 0)
+                if (aMin > bMin)
                 {
-                    int aMin = allySlot.skillData.baseCoinPower;
-                    int bMin = enemySlot.skillData.baseCoinPower;
-
-                    int aMax = aMin + (allySlot.skillData.incrementCoinPower * allySlot.skillData.coins);
-                    int bMax = bMin + (enemySlot.skillData.incrementCoinPower * enemySlot.skillData.coins);
-
-                    if (aMin > bMin)
-                    {
-                        allySkillUI.SetMin(Color.yellow, aMin);
-                        enemySkillUI.SetMin(Color.red, bMin);
-                    }
-                    else if (aMin < bMin)
-                    {
-                        allySkillUI.SetMin(Color.red, aMin);
-                        enemySkillUI.SetMin(Color.yellow, bMin);
-                    }
-
-                    if (aMax > bMax)
-                    {
-                        allySkillUI.SetMax(Color.yellow, aMax);
-                        enemySkillUI.SetMax(Color.red, bMax);
-                    }
-                    else if (aMax < bMax)
-                    {
-                        allySkillUI.SetMax(Color.red, aMax);
-                        enemySkillUI.SetMax(Color.yellow, bMax);
-                    }
-
-                    attackResult_TMP.color = Color.yellow;
-                    attackResult_TMP.text = "Clashing!";
+                    allySkillUI.SetMinColor(Color.yellow);
+                    enemySkillUI.SetMinColor(Color.red);
                 }
+                else if (aMin < bMin)
+                {
+                    allySkillUI.SetMinColor(Color.red);
+                    enemySkillUI.SetMinColor(Color.yellow);
+                }
+                if (aMax > bMax)
+                {
+                    allySkillUI.SetMaxColor(Color.yellow);
+                    enemySkillUI.SetMaxColor(Color.red);
+                }
+                else if (aMax < bMax)
+                {
+                    allySkillUI.SetMaxColor(Color.red);
+                    enemySkillUI.SetMaxColor(Color.yellow);
+                }
+
+                attackResult_TMP.color = Color.yellow;
+                attackResult_TMP.text = "Clashing!";
+            }
+            else
+            {
+                attackResult_TMP.text = "Unopposed";
             }
         }
     }

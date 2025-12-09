@@ -4,11 +4,16 @@ using DG.Tweening;
 
 public class CombatEntity : MonoBehaviour
 {
-    public enum AnimationID
+    public enum Animation_ID
     {
         MOVE = 0,
         ATTACK = 1,
         HIT = 2
+    }
+    public enum VFX_ID
+    {
+        BLOOD = 0,
+        PARRY = 1,
     }
 
     [Header("Runtime (Stat)")]
@@ -30,6 +35,15 @@ public class CombatEntity : MonoBehaviour
     [SerializeField] private GameObject damageUIPrefab;
     public HPUI hpUI;
     public CoinUI coinUI;
+
+    [Header("Visual Effects (VFX)")]
+    [SerializeField, ColorUsage(true, true)] private Color colorBloodVFX;
+    [SerializeField, ColorUsage(true, true)] private Color colorParryVFX;
+
+    [SerializeField] private GameObject VFX_BloodSplatter;
+    [SerializeField] private GameObject VFX_ParrySpark;
+    [SerializeField] private Transform transformBlood;
+    [SerializeField] private Transform transformParrySpark;
 
     [Header("Animations")]
     [SerializeField] private Animator animator;
@@ -81,19 +95,19 @@ public class CombatEntity : MonoBehaviour
         criticalChance = 0.1f;
     }
 
-    public void AnimateCharacter(AnimationID id)
+    public void AnimateCharacter(Animation_ID id)
     {
         switch (id)
         {
-            case AnimationID.MOVE:
+            case Animation_ID.MOVE:
                 animator.Play(MoveHashID);
                 break;
 
-            case AnimationID.ATTACK:
+            case Animation_ID.ATTACK:
                 animator.Play(AttackHashID);
                 break;
 
-            case AnimationID.HIT:
+            case Animation_ID.HIT:
                 animator.Play(HitHashID);
                 break;
         }
@@ -129,5 +143,32 @@ public class CombatEntity : MonoBehaviour
         // Ensure final color is set
         spriteRenderer.color = Color.white;
         yield break;
+    }
+
+    public void SpawnVFX(VFX_ID id)
+    {
+        switch (id)
+        {
+            case VFX_ID.BLOOD:
+                SpawnVFX(VFX_BloodSplatter, transformBlood.position, colorBloodVFX, 1f);
+                break;
+
+            case VFX_ID.PARRY:
+                SpawnVFX(VFX_ParrySpark, transformParrySpark.position, colorParryVFX, 0.5f);
+                break;
+        }
+    }
+    private void SpawnVFX(GameObject vfxPrefab, Vector3 position, Color vfxColor, float lifeTime)
+    {
+        GameObject vfx = Instantiate(vfxPrefab);
+        vfx.transform.position = position;
+
+        if (vfx.TryGetComponent(out ParticleSystem ps))
+        {
+            ParticleSystem.MainModule main = ps.main;
+            main.startColor = vfxColor;
+        }
+
+        Destroy(vfx, lifeTime);
     }
 }

@@ -43,3 +43,7 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  - Map
+  - Entity
+  - VFX
+  - UI

@@ -579,26 +579,29 @@ public class CombatSystem : MonoBehaviour
 
 
         //4. Break the loser coin (if successful)
+        character.entity.AnimateCharacter(CombatEntity.Animation_ID.ATTACK);
+        enemy.entity.AnimateCharacter(CombatEntity.Animation_ID.ATTACK);
+
         if (characterPower > enemyPower)
         {
-            character.entity.AnimateCharacter(CombatEntity.AnimationID.ATTACK);
+            character.entity.SpawnVFX(CombatEntity.VFX_ID.PARRY);
+            AudioController.Instance.PlayUI(AudioController.SOUND_ID.PARRY_WIN);
 
             enemyCoins -= 1;
             enemy.coinUI.AnimateCoinBreakUI();
-            AudioController.Instance.PlayUI(AudioController.SOUND_ID.PARRY_WIN);
         }
         else if (characterPower < enemyPower)
         {
-            enemy.entity.AnimateCharacter(CombatEntity.AnimationID.ATTACK);
+            enemy.entity.SpawnVFX(CombatEntity.VFX_ID.PARRY);
+            AudioController.Instance.PlayUI(AudioController.SOUND_ID.PARRY_WIN);
 
             characterCoins -= 1;
             character.coinUI.AnimateCoinBreakUI();
-            AudioController.Instance.PlayUI(AudioController.SOUND_ID.PARRY_WIN);
         }
         else
         {
-            character.entity.AnimateCharacter(CombatEntity.AnimationID.ATTACK);
-            enemy.entity.AnimateCharacter(CombatEntity.AnimationID.ATTACK);
+            character.entity.SpawnVFX(CombatEntity.VFX_ID.PARRY);
+            enemy.entity.SpawnVFX(CombatEntity.VFX_ID.PARRY);
             AudioController.Instance.PlayUI(AudioController.SOUND_ID.PARRY_DRAW);
         }
         yield return character.coinUI.GetCoinBreakDuration();
@@ -650,7 +653,7 @@ public class CombatSystem : MonoBehaviour
             host.coinUI.AnimateCoinAttackTossUI(coinPower, incrementPower, i, IsHeads);
             yield return delay;
 
-            host.AnimateCharacter(CombatEntity.AnimationID.ATTACK);
+            host.AnimateCharacter(CombatEntity.Animation_ID.ATTACK);
 
             // Calculate attack result.
             if (IsHeads) coinPower += incrementPower;
@@ -711,7 +714,7 @@ public class CombatSystem : MonoBehaviour
             // Display damage indicator & character hp slider animation.
             target.hpUI.AnimateHPSlider(target.HP, targetNewHP);
             target.AnimateDamageUI(hostAction.skillData, damageMultiplier, resist, IsCrit, damage);
-            target.AnimateCharacter(CombatEntity.AnimationID.HIT);
+            target.AnimateCharacter(CombatEntity.Animation_ID.HIT);
             target.HP = targetNewHP;
 
             switch (resistance_type)
@@ -749,10 +752,11 @@ public class CombatSystem : MonoBehaviour
         {
             target.HP = 0;
             target.hpUI.ToggleUI();
+            target.SpawnVFX(CombatEntity.VFX_ID.BLOOD);
             AudioController.Instance.PlayUI(AudioController.SOUND_ID.DEAD);
         }
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.5f);
 
         if (target.HP <= 0)
         {
