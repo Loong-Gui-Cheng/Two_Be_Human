@@ -17,6 +17,8 @@ public class PlayerController2D : MonoBehaviour
     [SerializeField] private Tilemap baseMap;
     [SerializeField] private List<Tilemap> colliderMap;
 
+    [SerializeField] private Vector2 direction;
+
     // Player Components
     private SpriteRenderer spriteRenderer;
     private Animator animator;
@@ -29,6 +31,7 @@ public class PlayerController2D : MonoBehaviour
     private InputAction moveAction;
     private InputAction interactAction;
     private InputAction menuAction;
+    private InputAction attackAction;
 
     // Player States
     private bool IsInMenu;
@@ -55,6 +58,7 @@ public class PlayerController2D : MonoBehaviour
         moveAction = playerInput.actions["Move"];
         interactAction = playerInput.actions["Interact"];
         menuAction = playerInput.actions["Menu"];
+        attackAction = playerInput.actions["Attack"];
     }
     private void OnDisable()
     {
@@ -73,6 +77,7 @@ public class PlayerController2D : MonoBehaviour
         MenuControl();
         MoveControl();
         InteractControl();
+        AttackControl();
     }
 
 
@@ -84,8 +89,6 @@ public class PlayerController2D : MonoBehaviour
             OnToggleMenu?.Invoke(IsInMenu);
         }
     }
-
-
     private void MoveControl()
     {
         if (IsInMenu) return;
@@ -95,6 +98,8 @@ public class PlayerController2D : MonoBehaviour
             float spdMultiplier = speed * Time.deltaTime;
 
             Vector2 moveDirection = new(input.x, input.y);
+            direction = moveDirection;
+
             if (CanMove(moveDirection))
             {
                 if (moveDirection.x < 0f) { spriteRenderer.flipX = true; }
@@ -154,6 +159,24 @@ public class PlayerController2D : MonoBehaviour
 
         if (interactAction.WasPressedThisFrame())
             InteractObject?.Invoke();
+    }
+    private void AttackControl()
+    {
+        if (attackAction.WasPressedThisFrame())
+        {
+            animator.Play("Attack");
+
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 1f, LayerMask.GetMask("Enemy"));
+            if (hit.collider != null)
+            {
+                GameObject enemy = hit.collider.gameObject;
+                if (enemy.TryGetComponent(out EFT_SceneTransition sceneTransition))
+                {
+                    sceneTransition.EnterScene();
+                }
+
+            }
+        }
     }
 }
 

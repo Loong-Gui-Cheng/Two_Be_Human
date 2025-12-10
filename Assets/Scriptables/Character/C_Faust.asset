@@ -10,18 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 468a1d9558b827e4187e5d97c666de5a, type: 3}
-  m_Name: C_GFaust
+  m_Name: C_Faust
   m_EditorClassIdentifier: 
-  id: 0
-  Name: G.Faust
+  id: 2
+  Name: Faust
   Level: 420
-  MaxHP: 358
-  HP: 123
-  ATK: 12
-  DEF: 23
+  MaxHP: 500
+  HP: 347
+  ATK: 47
+  DEF: 34
   minSPD: 1
-  maxSPD: 6
-  weakness: 1
+  maxSPD: 7
   slashResist: 1
   pierceResist: 1
   bluntResist: 1

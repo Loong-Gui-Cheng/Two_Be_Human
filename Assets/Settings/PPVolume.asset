@@ -374,22 +374,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   outlineColor:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: {r: 0, g: 0, b: 0, a: 1}
   outlineThickness:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.5
   depthMultiplier:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   depthBias:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.5
   normalMultiplier:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.5
   normalBias:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
 --- !u!114 &-3757877592200609216
 MonoBehaviour:
@@ -572,10 +572,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
   m_Name: Tonemapping
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   mode:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 0
   neutralHDRRangeReductionMode:
     m_OverrideState: 1
     m_Value: 2

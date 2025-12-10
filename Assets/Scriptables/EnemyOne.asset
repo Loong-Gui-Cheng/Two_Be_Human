@@ -33,6 +33,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a4de86f277efc2146a7cad628af9f245, type: 2}
   - {fileID: 11400000, guid: cd59eae823c499447ac287f4a4000d95, type: 2}
   - {fileID: 11400000, guid: 25d3c336adda89949bb809a0ab73ba5c, type: 2}
+  - {fileID: 11400000, guid: fa354436cb12a6345ad810b20ec7626a, type: 2}
+  - {fileID: 11400000, guid: 29f138b42fa1ad24ba777a08c796cc27, type: 2}
+  - {fileID: 11400000, guid: acc0202ad82a4aa419b9dce9707f1981, type: 2}
+  - {fileID: 11400000, guid: bfce001d5d5f5da46b7954c9e889db55, type: 2}
   exp: 5
   gold: 10
   equipmentDrop: []

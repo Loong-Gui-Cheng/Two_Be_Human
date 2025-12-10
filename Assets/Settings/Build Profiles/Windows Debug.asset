@@ -24,6 +24,8 @@ MonoBehaviour:
     m_path: Assets/Scenes/SceneMenu.unity
   - m_enabled: 1
     m_path: Assets/Scenes/SceneDream.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/SceneCombat.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings: []

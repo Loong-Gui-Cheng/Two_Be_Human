@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -21,6 +20,7 @@ public class CombatUISystem : MonoBehaviour
 
     [Header("Battle UI Animation")]
     [SerializeField] private RectTransform battleUI;
+    [SerializeField] private Canvas battleCanvas;
     [SerializeField, CE_ReadOnly] private bool IsBattleUIAnimating;
     [SerializeField, CE_ReadOnly] private bool IsBattleUIDisplaying;
 
@@ -66,10 +66,12 @@ public class CombatUISystem : MonoBehaviour
     private List<ActionSlot> enemySlots = new();
 
 
-    private const float DURATION_BATTLE_START = 0.3f;
+    private const float DURATION_BATTLE_START = 1f;
+    private const float DURATION_BATTLE_UI = 0.3f;
     private const float DURATION_TURN_UI = 3f;
 
     private readonly WaitForSeconds YIELD_BATTLE_START = new(DURATION_BATTLE_START);
+    private readonly WaitForSeconds YIELD_BATTLE_UI = new(DURATION_BATTLE_UI);
     private readonly WaitForSeconds YIELD_TURN_UI = new(DURATION_TURN_UI);
 
     private void Update()
@@ -256,6 +258,8 @@ public class CombatUISystem : MonoBehaviour
         int index = FindActionIndex(currentSlot.GetID());
         if (index >= 0) playerActions.RemoveAt(index);
 
+        // ***************************
+        // ERROR CLASH UI (UNEQUIP)
         clashUI.UpdateUI(currentSlot, currentSlot.targetSlot);
     }
     private void SelectSkill(SkillButtonUI skill)
@@ -313,11 +317,21 @@ public class CombatUISystem : MonoBehaviour
         IsBattleUIAnimating = true;
         IsBattleUIDisplaying = !IsBattleUIDisplaying;
 
-        if (IsBattleUIDisplaying) battleUI.DOMoveY(0f, DURATION_BATTLE_START);
-        else battleUI.DOMoveY(-300f, DURATION_BATTLE_START);
-        yield return YIELD_BATTLE_START;
+        if (IsBattleUIDisplaying)
+        {
+            battleCanvas.enabled = true;
+            battleUI.DOMoveY(0f, DURATION_BATTLE_UI);
+        }
 
-        if (!IsBattleUIDisplaying) ResetCanvasUI();
+        else battleUI.DOMoveY(-600f, DURATION_BATTLE_UI);
+        yield return YIELD_BATTLE_UI;
+
+        if (!IsBattleUIDisplaying)
+        {
+            battleCanvas.enabled = false;
+            ResetCanvasUI();
+        }
+
         IsBattleUIAnimating = false;
         yield break;
     }
@@ -367,7 +381,14 @@ public class CombatUISystem : MonoBehaviour
         result_TMP.enabled = true;
         result_TMP.rectTransform.DOScale(new Vector3(1f, 1f, 1f), 0.2f);
         yield return new WaitForSeconds(0.2f);
-        result_TMP.rectTransform.DOPunchScale(new Vector3(0.5f, 0.5f, 0.5f), 0.5f, 5, 1f); 
+        result_TMP.rectTransform.DOPunchScale(new Vector3(0.5f, 0.5f, 0.5f), 0.5f, 5, 1f);
+
+        yield return new WaitForSeconds(1f);
+        if (TryGetComponent(out EFT_SceneTransition sceneTransition))
+        {
+            sceneTransition.EnterScene();
+        }
+
         yield break;
     }
 

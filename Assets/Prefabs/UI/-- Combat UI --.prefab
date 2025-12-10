@@ -362,8 +362,8 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 200, y: 200}
-  m_Spacing: {x: 30, y: 10}
+  m_CellSize: {x: 180, y: 180}
+  m_Spacing: {x: 20, y: 10}
   m_Constraint: 2
   m_ConstraintCount: 1
 --- !u!1 &293319549114003498
@@ -1272,6 +1272,7 @@ GameObject:
   - component: {fileID: 3512483344402711792}
   - component: {fileID: 1468649452855828031}
   - component: {fileID: 3401443480950597057}
+  - component: {fileID: 814969230324096426}
   m_Layer: 5
   m_Name: -- Combat UI --
   m_TagString: Untagged
@@ -1345,6 +1346,7 @@ MonoBehaviour:
   memberUIPrefab: {fileID: 23651117595908119, guid: 8a4742b53c2ce3043945adeccd5103c6, type: 3}
   turn_TMP: {fileID: 5354570250034418961}
   battleUI: {fileID: 7809083737120988788}
+  battleCanvas: {fileID: 6755650774669692489}
   IsBattleUIAnimating: 0
   IsBattleUIDisplaying: 0
   startTurnUICanvas: {fileID: 5518257468519037324}
@@ -1368,6 +1370,30 @@ MonoBehaviour:
   currentSkill: {fileID: 0}
   playerActions: []
   enemyActions: []
+--- !u!114 &814969230324096426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881663398585357293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb4e70d1995de4b448f0491f88f26d73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transitionData:
+    type: 0
+    duration: 1
+    bufferTime: 1
+    InColorStart: {r: 0, g: 0, b: 0, a: 1}
+    InColorEnd: {r: 0, g: 0, b: 0, a: 0}
+    OutColorStart: {r: 0, g: 0, b: 0, a: 0}
+    OutColorEnd: {r: 0, g: 0, b: 0, a: 1}
+  isTransitToScene: 1
+  sceneToLoad: 1
+  sceneCoordinates: {x: 0, y: 0, z: 0}
+  sceneOrientation: {x: 0, y: 0, z: 0}
 --- !u!1 &2044523215276246106
 GameObject:
   m_ObjectHideFlags: 0
@@ -2079,7 +2105,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4942894967317616149}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 814969230324096426}
+        m_TargetAssemblyTypeName: EFT_SceneTransition, Assembly-CSharp
+        m_MethodName: EnterScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2526480751349729020
 GameObject:
   m_ObjectHideFlags: 0
@@ -3180,7 +3218,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: -300}
-  m_SizeDelta: {x: 1300, y: 300}
+  m_SizeDelta: {x: 1300, y: 250}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!223 &6755650774669692489
 Canvas:
@@ -3301,7 +3339,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2128430821876123703
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3317,10 +3355,10 @@ RectTransform:
   - {fileID: 7100185428078611371}
   m_Father: {fileID: 2967546047383625368}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 150, y: -150}
+  m_SizeDelta: {x: 230, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5447591691465626879
 CanvasRenderer:
@@ -4395,7 +4433,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -20, y: 0}
-  m_SizeDelta: {x: 980, y: 280}
+  m_SizeDelta: {x: 980, y: 240}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &4852376488953260111
 CanvasRenderer:

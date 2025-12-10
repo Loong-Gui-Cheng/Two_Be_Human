@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 468a1d9558b827e4187e5d97c666de5a, type: 3}
-  m_Name: C_NFaust
+  m_Name: C_Don
   m_EditorClassIdentifier: 
   id: 1
-  Name: N.Faust
+  Name: Don
   Level: 420
   MaxHP: 578
   HP: 420
@@ -21,15 +21,14 @@ MonoBehaviour:
   DEF: 15
   minSPD: 3
   maxSPD: 7
-  weakness: 3
   slashResist: 0.5
   pierceResist: 0.5
   bluntResist: 0.5
   magicResist: 0.5
   slot: 0
-  portrait: {fileID: 21300000, guid: 9eafa69b6b9f89246a340f3f1d7b49b1, type: 3}
+  portrait: {fileID: 21300000, guid: 00fab93ac6757774f8af55e743254b0e, type: 3}
   skills:
-  - {fileID: 11400000, guid: cd59eae823c499447ac287f4a4000d95, type: 2}
-  - {fileID: 11400000, guid: cd59eae823c499447ac287f4a4000d95, type: 2}
-  - {fileID: 11400000, guid: cd59eae823c499447ac287f4a4000d95, type: 2}
+  - {fileID: 11400000, guid: 228a7fabd7e0f6043a1ee1647aa5968a, type: 2}
+  - {fileID: 11400000, guid: 29f138b42fa1ad24ba777a08c796cc27, type: 2}
+  - {fileID: 11400000, guid: b9429bb3ed6c03849bc2de1aacfd4ef2, type: 2}
   equipments: []
