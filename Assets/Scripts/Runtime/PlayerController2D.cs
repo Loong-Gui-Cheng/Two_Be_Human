@@ -42,7 +42,7 @@ public class PlayerController2D : MonoBehaviour
     public static System.Action<Vector3> IsPlayerNear;
     public static System.Action InteractObject;
 
-    public static event System.Action<bool> OnToggleMenu;
+    public static event System.Action OnToggleMenu;
 
     private void OnEnable()
     {
@@ -59,10 +59,14 @@ public class PlayerController2D : MonoBehaviour
         interactAction = playerInput.actions["Interact"];
         menuAction = playerInput.actions["Menu"];
         attackAction = playerInput.actions["Attack"];
+
+        IGUIManager.OnReceiveMenuState += SetMenuStatus;
     }
     private void OnDisable()
     {
         playerInput.actions.Disable();
+
+        IGUIManager.OnReceiveMenuState -= SetMenuStatus;
     }
 
 
@@ -85,10 +89,10 @@ public class PlayerController2D : MonoBehaviour
     {
         if (menuAction.WasPressedThisFrame())
         {
-            IsInMenu = !IsInMenu;
-            OnToggleMenu?.Invoke(IsInMenu);
+            OnToggleMenu?.Invoke();
         }
     }
+
     private void MoveControl()
     {
         if (IsInMenu) return;
@@ -178,6 +182,8 @@ public class PlayerController2D : MonoBehaviour
             }
         }
     }
+
+    private void SetMenuStatus(bool menuStatus) => IsInMenu = menuStatus;
 }
 
 public interface IInteractable

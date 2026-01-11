@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class TeamManager : MonoBehaviour
 {
     [Header("User Interface (UI)")]
-    [SerializeField] private Canvas memberModeCanvas;
-    [SerializeField] private Canvas teamModeCanvas;
     [SerializeField] private Button mode_Button;
     [SerializeField] private TextMeshProUGUI mode_TMP;
 
@@ -16,17 +14,26 @@ public class TeamManager : MonoBehaviour
     [Header("ColorBlock: Confirm Team")]
     [SerializeField] private ColorBlock confirm_CB;
 
+    [Header("Resistance (Asset)")]
+    [SerializeField] private Sprite slashSprite;
+    [SerializeField] private Sprite pierceSprite;
+    [SerializeField] private Sprite bluntSprite;
+    [SerializeField] private Sprite magicSprite;
 
     [Header("Member Inspection")]
     [SerializeField, CE_ReadOnly] private CharacterCardUI currentCharacter;
+    [SerializeField] private RectTransform skillGroup;
+    [SerializeField] private GameObject skillMenuUIPrefab;
+    [SerializeField] private TextMeshProUGUI name_TMP;
+    [SerializeField] private TextMeshProUGUI level_TMP;
+    [SerializeField] private TextMeshProUGUI hp_TMP;
+    [SerializeField] private TextMeshProUGUI nextEXP_TMP;
     [SerializeField] private TextMeshProUGUI atk_TMP;
     [SerializeField] private TextMeshProUGUI def_TMP;
     [SerializeField] private TextMeshProUGUI spd_TMP;
-    [SerializeField] private TextMeshProUGUI level_TMP;
-    [SerializeField] private TextMeshProUGUI name_TMP;
-    [SerializeField] private TextMeshProUGUI weakness_TMP;
-    [SerializeField] private TextMeshProUGUI hp_TMP;
     [SerializeField] private Slider hp_Slider;
+    [SerializeField] private List<SkillMenuUI> skills;
+    [SerializeField] private List<ResistanceUI> resistances;
 
     [Header("Team Loadout")]
     [SerializeField] private PlayerData playerData;
@@ -34,21 +41,21 @@ public class TeamManager : MonoBehaviour
 
     [Header("Tracker")]
     [SerializeField] private Transform characterGroup;
-    [SerializeField] private Transform slotGroup;
 
     // Read Only
     [SerializeField, CE_ReadOnly] private List<CharacterCardUI> characters;
-    [SerializeField] private List<CharacterSlotUI> slots;
     [SerializeField, CE_ReadOnly] private bool IsTeamMode;
 
     private readonly Dictionary<CharacterData.ID, CharacterCardUI> cardDictionary = new();
-    private readonly Dictionary<CharacterData.ID, CharacterSlotUI> slotDictionary = new();
+    private readonly Dictionary<CharacterData.ID, CharacterCardUI> slotDictionary = new();
 
-    public void Start()
+    public static event System.Action OnUpdateLoadoutUI;
+
+    private void Start()
     {
         OnLoad();
     }
-    public void OnLoad()
+    private void OnLoad()
     {
         // Initialise Currently Unlocked Characters.
         if (characterCardUIPrefab != null)
@@ -82,8 +89,6 @@ public class TeamManager : MonoBehaviour
     {
         // Swap between combat loadout and individual member inspection
         IsTeamMode = !IsTeamMode;
-        teamModeCanvas.enabled = IsTeamMode;
-        memberModeCanvas.enabled = !IsTeamMode;
 
         for (int i = 0; i < characters.Count; i++)
             characters[i].ToggleMode(IsTeamMode);
@@ -101,8 +106,6 @@ public class TeamManager : MonoBehaviour
             mode_Button.colors = editTeam_CB;
             mode_TMP.text = "Edit Team";
         }
-
-        UpdateLoadoutUI();
     }
 
     public void LoadoutMember(CharacterCardUI card)
@@ -126,16 +129,56 @@ public class TeamManager : MonoBehaviour
         currentCharacter.ToggleInspectUI(true);
         CharacterData character = currentCharacter.GetData();
 
+        // Clear dirty ui
+        for (int i = skills.Count - 1; i >= 0; i--)
+            Destroy(skills[i].gameObject);
+
+        skills.Clear();
+
+        // Update new ui
+        for (int i = 0; i < character.skills.Count; i++)
+        {
+            SkillData skillData = character.skills[i];
+            if (skillData == null) continue;
+
+            GameObject go = Instantiate(skillMenuUIPrefab, skillGroup);
+            if (go.TryGetComponent(out SkillMenuUI skillMenuUI))
+            {
+                string skillOrder = string.Format("Skill {0}", i + 1);
+                switch (skillData.resistance)
+                {
+                    case SkillData.RESISTANCE_TYPE.SLASH:
+                        skillMenuUI.SetData(skillData, slashSprite, skillOrder);
+                        break;
+                    case SkillData.RESISTANCE_TYPE.PIERCE:
+                        skillMenuUI.SetData(skillData, pierceSprite, skillOrder);
+                        break;
+                    case SkillData.RESISTANCE_TYPE.BLUNT:
+                        skillMenuUI.SetData(skillData, bluntSprite, skillOrder);
+                        break;
+                    case SkillData.RESISTANCE_TYPE.MAGIC:
+                        skillMenuUI.SetData(skillData, magicSprite, skillOrder);
+                        break;
+                }
+
+                skills.Add(skillMenuUI);
+            }
+        }
+
+        for (int i = 0; i < resistances.Count; i++)
+            resistances[i].SetData(character);
+
+        name_TMP.text = string.Format("{0}", character.Name);
+        level_TMP.text = string.Format("LV {0}", character.Level);
+        hp_TMP.text = string.Format("{0} / {1}", character.HP, character.MaxHP);
+        nextEXP_TMP.text = string.Format("Next EXP: {0}", character.RequiredEXP - character.EXP);
 
         atk_TMP.text = string.Format("ATK: {0}", character.ATK);
         def_TMP.text = string.Format("DEF: {0}", character.DEF);
         spd_TMP.text = string.Format("SPD: {0} - {1}", character.minSPD, character.maxSPD);
-        level_TMP.text = string.Format("Lvl: {0}", character.Level);
-        name_TMP.text = string.Format("{0}", character.Name);
-        weakness_TMP.text = string.Format("Weak to: {0}", "Slash");
-        hp_TMP.text = string.Format("{0} / {1}", character.HP, character.MaxHP);
 
         hp_Slider.maxValue = character.MaxHP;
+        hp_Slider.minValue = 0;
         hp_Slider.value = character.HP;
     }
     private void AddToLoadout(CharacterCardUI card)
@@ -166,15 +209,13 @@ public class TeamManager : MonoBehaviour
 
     public void UpdateLoadoutUI()
     {
+        playerData.UpdateLoadout();
         List<CharacterData> combatLoadout = playerData.combatCharacters;
 
+
         // Clear dirty loadout ui arrangement
-        for (int i = 0; i < slots.Count; i++)
-        {
-            slots[i].SetData(null);
-            slots[i].UpdateUI();
-            slotDictionary.Clear();
-        }
+        slotDictionary.Clear();
+
         // Clear dirty card loadout ui 
         for (int i = 0; i < characters.Count; i++)
         {
@@ -182,30 +223,17 @@ public class TeamManager : MonoBehaviour
             card.UpdateLoadoutUI();
         }
 
-
         // Update new loadout ui arrangement
-        if (IsTeamMode)
+        for (int i = 0; i < combatLoadout.Count; i++)
         {
-            for (int i = 0; i < combatLoadout.Count; i++)
-            {
-                CharacterData combatCharData = combatLoadout[i];
-                if (combatCharData == null) continue;
+            CharacterData combatCharData = combatLoadout[i];
+            if (combatCharData == null) continue;
+            if (slotDictionary.ContainsKey(combatCharData.id)) continue;
 
-                for (int j = 0; j < slots.Count; j++)
-                {
-                    if (slots[j] == null) continue;
-                    if (slots[j].GetData() != null) continue;
-                    if (slotDictionary.ContainsKey(combatCharData.id)) continue;
-
-                    slots[j].SetData(combatCharData);
-                    slots[j].UpdateUI();
-                    slotDictionary.Add(combatCharData.id, slots[j]);
-                }
-
-                // Update card ui
-                if (cardDictionary.TryGetValue(combatCharData.id, out CharacterCardUI card))
-                    card.DisplayLoadoutUI(i);
-            }
+            if (cardDictionary.TryGetValue(combatCharData.id, out CharacterCardUI card))
+                slotDictionary.Add(combatCharData.id, card);
         }
+
+        OnUpdateLoadoutUI?.Invoke();
     }
 }

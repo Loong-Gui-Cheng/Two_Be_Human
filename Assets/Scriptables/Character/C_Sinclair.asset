@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   Name: Sinclair
-  Level: 420
+  position: 0
+  Level: 36
   MaxHP: 358
   HP: 123
   ATK: 12
@@ -22,8 +23,8 @@ MonoBehaviour:
   minSPD: 1
   maxSPD: 6
   slashResist: 1
-  pierceResist: 1
-  bluntResist: 1
+  pierceResist: 0.5
+  bluntResist: 2
   magicResist: 1
   slot: 0
   portrait: {fileID: 21300000, guid: 7cff0094742d5ca4785563a7a61c630f, type: 3}
@@ -31,4 +32,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1c9d70996df3cde4fb8f135066cd5eba, type: 2}
   - {fileID: 11400000, guid: fa354436cb12a6345ad810b20ec7626a, type: 2}
   - {fileID: 11400000, guid: acc0202ad82a4aa419b9dce9707f1981, type: 2}
-  equipments: []
+  weapon: {fileID: 11400000, guid: 46ea98e586057b6479146323f5c69612, type: 2}
+  armour: {fileID: 0}
+  accessory: {fileID: 0}

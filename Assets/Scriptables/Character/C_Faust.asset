@@ -14,16 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2
   Name: Faust
-  Level: 420
+  position: 2
+  Level: 24
+  EXP: 0
+  RequiredEXP: 2875
   MaxHP: 500
   HP: 347
   ATK: 47
   DEF: 34
   minSPD: 1
   maxSPD: 7
-  slashResist: 1
+  slashResist: 2
   pierceResist: 1
-  bluntResist: 1
+  bluntResist: 0.5
   magicResist: 1
   slot: 0
   portrait: {fileID: 21300000, guid: 9eafa69b6b9f89246a340f3f1d7b49b1, type: 3}
@@ -31,4 +34,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 25d3c336adda89949bb809a0ab73ba5c, type: 2}
   - {fileID: 11400000, guid: a4de86f277efc2146a7cad628af9f245, type: 2}
   - {fileID: 11400000, guid: cd59eae823c499447ac287f4a4000d95, type: 2}
-  equipments: []
+  weapon: {fileID: 0}
+  armour: {fileID: 0}
+  accessory: {fileID: 0}

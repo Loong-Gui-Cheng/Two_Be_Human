@@ -21,7 +21,8 @@ public class PlayerData : ScriptableObject
     public List<CharacterData> combatCharacters;
 
     [Header("Inventory")]
-    public int inventory;
+    public List<EquipmentData> equipments;
+    public List<EquipmentData> items;
 
     public void OnLoad(System.IO.BinaryReader binaryReader)
     {
@@ -30,5 +31,17 @@ public class PlayerData : ScriptableObject
     public void ResetSave()
     {
 
+    }
+    public void UpdateLoadout()
+    {
+        for (int i = 0; i < characters.Count; i++)
+            characters[i].position = -1;
+
+        for (int i = 0; i < combatCharacters.Count; i++)
+            combatCharacters[i].position = i;
+    }
+    public void OnValidate()
+    {
+        UpdateLoadout();
     }
 }

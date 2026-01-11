@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e782e56444e9b94594267ec5350e481, type: 3}
+  m_Name: EDAC_EnchantedEarrings
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
+  type: 2
+  id: 1
+  icon: {fileID: 0}
+  Name: Enchanted Earrings
+  Description: 'An extremely rare earring said to unlock the user''s potential. '
+  amount: 1
+  statPoint: 0
+  goldValue: 100
+  effectPrefab: {fileID: 1881663398585357293, guid: 2a1ba02a6adbf5845b961a683c66a0bb, type: 3}
+  effectName: Damage Boost

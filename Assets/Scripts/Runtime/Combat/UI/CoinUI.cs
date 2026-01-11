@@ -28,9 +28,9 @@ public class CoinUI : MonoBehaviour
     [SerializeField] private GameObject coinPrefab;
     public List<Image> coins;
 
-    private const float DURATION_COIN_TOSS = 1f;
+    private const float DURATION_COIN_TOSS = 0.8f;
     private const float DURATION_COIN_BREAK = 0.3f;
-    private const float DURATION_ATTACK = 0.6f;
+    private const float DURATION_ATTACK = 0.8f;
 
     private readonly WaitForSeconds YIELD_COIN_TOSS = new(DURATION_COIN_TOSS);
     private readonly WaitForSeconds YIELD_COIN_BREAK = new(DURATION_COIN_BREAK);
@@ -103,6 +103,7 @@ public class CoinUI : MonoBehaviour
         for (int i = 0; i < coins.Count; i++)
         {
             coinLight.enabled = false;
+            float coinTossDuration = DURATION_COIN_TOSS / coins.Count;
 
             if (headCoins != 0 && tailCoins != 0)
             {
@@ -112,6 +113,8 @@ public class CoinUI : MonoBehaviour
                     headCoins--;
                     coinPower += incrementPower;
                     coins[i].color = Color.yellow;
+                    coinPower_TMP.color = Color.white;
+
                     coinPower_TMP.text = string.Format("{0}", coinPower);
                     AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_WIN);
                     coinLight.enabled = true;
@@ -120,6 +123,8 @@ public class CoinUI : MonoBehaviour
                 {
                     tailCoins--;
                     coins[i].color = Color.black;
+                    coinPower_TMP.color = Color.gray6;
+
                     AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_FAIL);
                 }
             }
@@ -128,6 +133,8 @@ public class CoinUI : MonoBehaviour
                 headCoins--;
                 coinPower += incrementPower;
                 coins[i].color = Color.yellow;
+                coinPower_TMP.color = Color.white;
+
                 coinPower_TMP.text = string.Format("{0}", coinPower);
                 AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_WIN);
                 coinLight.enabled = true;
@@ -136,10 +143,13 @@ public class CoinUI : MonoBehaviour
             {
                 tailCoins--;
                 coins[i].color = Color.black;
+                coinPower_TMP.color = Color.gray6;
+
                 AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_FAIL);
             }
 
-            yield return new WaitForSeconds(DURATION_COIN_TOSS / coins.Count);
+            coinPower_TMP.rectTransform.DOPunchScale(new Vector3(1.05f, 1.05f, 1.05f), coinTossDuration, 5);
+            yield return new WaitForSeconds(coinTossDuration);
         }
 
         coinLight.enabled = false;
@@ -158,6 +168,7 @@ public class CoinUI : MonoBehaviour
     private IEnumerator CoinAttackAnimation(int coinPower, int increment, int index, bool isHeads)
     {
         int finalPower = coinPower;
+        float coinTossDuration = DURATION_ATTACK / 2f;
         coinLight.enabled = false;
 
         if (isHeads)
@@ -165,17 +176,21 @@ public class CoinUI : MonoBehaviour
             finalPower += increment;
             coinLight.enabled = true;
             coins[index].color = Color.yellow;
+            coinPower_TMP.color = Color.white;
+
             AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_WIN);
         }
         else
         {
             coins[index].color = Color.black;
+            coinPower_TMP.color = Color.gray6;
+
             AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_FAIL);
         }
 
         coinPower_TMP.text = string.Format("{0}", finalPower);
-        yield return new WaitForSeconds(DURATION_ATTACK / 2f);
-
+        coinPower_TMP.rectTransform.DOPunchScale(new Vector3(1.05f, 1.05f, 1.05f), coinTossDuration, 5);
+        yield return new WaitForSeconds(coinTossDuration);
 
         yield break;
     }

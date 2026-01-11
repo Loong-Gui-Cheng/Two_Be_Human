@@ -54,12 +54,12 @@ public class SkillUI : MonoBehaviour
                 type_icon.sprite = slash_icon;
                 break;
 
-            case SkillData.RESISTANCE_TYPE.BLUNT:
-                type_icon.sprite = blunt_icon;
-                break;
-
             case SkillData.RESISTANCE_TYPE.PIERCE:
                 type_icon.sprite = pierce_icon;
+                break;
+
+            case SkillData.RESISTANCE_TYPE.BLUNT:
+                type_icon.sprite = blunt_icon;
                 break;
 
             case SkillData.RESISTANCE_TYPE.MAGIC:

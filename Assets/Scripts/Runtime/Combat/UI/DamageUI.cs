@@ -34,12 +34,12 @@ public class DamageUI : MonoBehaviour
                 icon.sprite = slash_icon;
                 break;
 
-            case SkillData.RESISTANCE_TYPE.BLUNT:
-                icon.sprite = blunt_icon;
-                break;
-
             case SkillData.RESISTANCE_TYPE.PIERCE:
                 icon.sprite = pierce_icon;
+                break;
+
+            case SkillData.RESISTANCE_TYPE.BLUNT:
+                icon.sprite = blunt_icon;
                 break;
 
             case SkillData.RESISTANCE_TYPE.MAGIC:

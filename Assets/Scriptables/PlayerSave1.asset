@@ -15,8 +15,8 @@ MonoBehaviour:
   saveID: 0
   worldID: 0
   position: {x: 0, y: 0}
-  gold: 0
-  teamLevel: 0
+  gold: 105
+  teamLevel: 15
   teamEXP: 0
   teamAvailablePoints: 0
   characters:
@@ -25,7 +25,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d9bbfb4a2c3b1094b9b152102004aa76, type: 2}
   - {fileID: 11400000, guid: ca510204991145745aa60c6ff72229d6, type: 2}
   combatCharacters:
-  - {fileID: 11400000, guid: ca510204991145745aa60c6ff72229d6, type: 2}
   - {fileID: 11400000, guid: c35ed6e1b6b2c1c47a8638b41dc54fec, type: 2}
+  - {fileID: 11400000, guid: b4051a10c7d5f6741a11360edd6d76fc, type: 2}
   - {fileID: 11400000, guid: d9bbfb4a2c3b1094b9b152102004aa76, type: 2}
-  inventory: 0
+  equipments:
+  - {fileID: 11400000, guid: 61f9af0def01f794fbb1a72a7265afd9, type: 2}
+  - {fileID: 11400000, guid: 2a371501578ddcc4a9d6aab103363e3f, type: 2}
+  - {fileID: 11400000, guid: 6e2544496343bb748a95f78de89d2496, type: 2}
+  - {fileID: 11400000, guid: 78c688f720af70e4d837cc025fec8f6d, type: 2}
+  - {fileID: 11400000, guid: 4a87f13be298d8a4f9582a03f618e592, type: 2}
+  - {fileID: 11400000, guid: 46ea98e586057b6479146323f5c69612, type: 2}
+  items: []

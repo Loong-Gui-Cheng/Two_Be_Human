@@ -10,9 +10,14 @@ public class IGUIManager : MonoBehaviour
     {
         MAIN = 0,
         TEAM = 1,
-        INVENTORY = 2,
-        POINT = 3,
-        CONFIG = 4
+        EQUIP_INSPECTOR = 2,
+        EQUIP_GEAR = 3,
+        ITEM = 4,
+        STAT_TREE = 5,
+        SYSTEM = 6,
+        CONFIG = 7,
+        LOAD_DATA = 8,
+        SAVE_DATA = 9
     }
 
     [Header("UI/UX In-Game UI")]
@@ -24,6 +29,7 @@ public class IGUIManager : MonoBehaviour
     [SerializeField] private List<Canvas> menuCanvas;
 
     private readonly Dictionary<CanvasID, Canvas> menuCanvasMap = new();
+    public static event System.Action<bool> OnReceiveMenuState;
 
     private void Start()
     {
@@ -33,6 +39,7 @@ public class IGUIManager : MonoBehaviour
     private void OnEnable()
     {
         PlayerController2D.OnToggleMenu += ToggleMenu;
+
     }
     private void OnDisable()
     {
@@ -40,10 +47,55 @@ public class IGUIManager : MonoBehaviour
     }
 
 
-    private void ToggleMenu(bool IsMenuOn)
+    private void ToggleMenu()
     {
-        MenuCanvas.enabled = IsMenuOn;
-        GUICanvas.enabled = !IsMenuOn;
+        bool MenuState = MenuCanvas.enabled;
+
+        if (MenuState)
+        {
+            switch (activeCanvasID)
+            {
+                // Toggles off menu screen.
+                case CanvasID.MAIN:
+                    MenuState = !MenuState;
+
+                    GUICanvas.enabled = !MenuState;
+                    MenuCanvas.enabled = MenuState;
+                    break;
+
+                case CanvasID.TEAM:
+                    MainMenuUIManager.OnUpdateTeam?.Invoke();
+                    SwapMenu((int)CanvasID.MAIN);
+                    break;
+
+                case CanvasID.EQUIP_GEAR:
+                    EquipmentInspector.OnUpdateEquipment?.Invoke();
+                    MainMenuUIManager.OnUpdateTeam?.Invoke();
+                    SwapMenu((int)CanvasID.EQUIP_INSPECTOR);
+                    break;
+
+                // Switch to system screen.
+                case CanvasID.CONFIG:
+                case CanvasID.LOAD_DATA:
+                case CanvasID.SAVE_DATA:
+                    SwapMenu((int)CanvasID.SYSTEM);
+                    break;
+
+                // Switch to main screen.
+                default:
+                    SwapMenu((int)CanvasID.MAIN);
+                    break;
+            }
+        }
+        else
+        {
+            // Toggles on 
+            MenuState = !MenuState;
+            GUICanvas.enabled = !MenuState;
+            MenuCanvas.enabled = MenuState;
+        }
+
+        OnReceiveMenuState?.Invoke(MenuState);
     }
     public void SwapMenu(int id)
     {

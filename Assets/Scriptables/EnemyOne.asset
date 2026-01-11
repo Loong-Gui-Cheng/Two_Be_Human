@@ -16,7 +16,7 @@ MonoBehaviour:
   Name: Abomination
   Level: 1
   MaxHP: 100
-  HP: 100
+  HP: 10
   ATK: 32
   DEF: 14
   minSPD: 2

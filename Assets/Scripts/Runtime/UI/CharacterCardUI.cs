@@ -11,14 +11,12 @@ public class CharacterCardUI : MonoBehaviour
     [SerializeField] private Image portrait_Image;
     [SerializeField] private TextMeshProUGUI name_TMP;
     [SerializeField] private TextMeshProUGUI level_TMP;
+    [SerializeField] private TextMeshProUGUI hpValue_TMP;
+    [SerializeField] private Slider hpSlider;
 
     [Header("Inspection (UI)")]
     [SerializeField] private GameObject inspectUIGroup;
-
-    [Header("Loadout (UI)")]
-    [SerializeField] private GameObject loadoutUIGroup;
-    [SerializeField] private Image positionBG_Image;
-    [SerializeField] private TextMeshProUGUI position_TMP;
+    public TextMeshProUGUI position_TMP;
 
     [Header("Dynamic Interaction")]
     public Button inspect_Button;
@@ -48,13 +46,14 @@ public class CharacterCardUI : MonoBehaviour
 
         portrait_Image.sprite = characterData.portrait;
         name_TMP.text = characterData.Name;
-        level_TMP.text = string.Format("LVL: {0}", characterData.Level);
+        level_TMP.text = string.Format("Lv {0}", characterData.Level);
+        hpValue_TMP.text = string.Format("{0}", characterData.HP);
 
-        loadoutUIGroup.SetActive(false);
-    }
-    public void DisplayLoadoutUI(int position)
-    {
-        loadoutUIGroup.SetActive(true);
-        position_TMP.text = string.Format("{0}", position + 1);
+        hpSlider.minValue = 0;
+        hpSlider.maxValue = characterData.MaxHP;
+        hpSlider.value = characterData.HP;
+
+        if (characterData.position < 0) position_TMP.text = "-";
+        else position_TMP.text = string.Format("{0}", characterData.position + 1);
     }
 }

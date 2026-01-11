@@ -17,9 +17,12 @@ public class CharacterData : ScriptableObject
     [Header("Identifier")]
     public ID id;
     public string Name;
+    public int position;
 
     [Header("Base Stats")]
     public int Level;
+    public float EXP;
+    public float RequiredEXP;
     public float MaxHP;
     public float HP;
     public float ATK;
@@ -45,7 +48,9 @@ public class CharacterData : ScriptableObject
     public List<SkillData> skills;
 
     [Header("Equipment")]
-    public List<GameObject> equipments;
+    public EquipmentData weapon;
+    public EquipmentData armour;
+    public EquipmentData accessory;
 
 
     public void OnLoad(System.IO.BinaryReader binaryReader)
@@ -55,5 +60,23 @@ public class CharacterData : ScriptableObject
     {
         if (minSPD >= maxSPD) minSPD = maxSPD - 1;
         if (maxSPD < minSPD) maxSPD = minSPD + 1;
+
+        if (weapon != null)
+        {
+            if (weapon.type != EquipmentData.TYPE.WEAPON)
+                weapon = null;
+        }
+        if (armour != null)
+        {
+            if (armour.type != EquipmentData.TYPE.ARMOUR)
+                armour = null;
+        }
+        if (accessory != null)
+        {
+            if (accessory.type != EquipmentData.TYPE.ACCESSORY)
+                accessory = null;
+        }
+
+        RequiredEXP = 100f * (1.25f) * (Level - 1);
     }
 }

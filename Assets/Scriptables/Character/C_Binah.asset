@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3
   Name: Binah
+  position: -1
   Level: 129
   MaxHP: 490
   HP: 234
@@ -31,4 +32,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ec622c6f26ef97a4f862dd4b06d71fbe, type: 2}
   - {fileID: 11400000, guid: 64ca81fe2433e99408e989cdfaae04ec, type: 2}
   - {fileID: 11400000, guid: bfce001d5d5f5da46b7954c9e889db55, type: 2}
-  equipments: []
+  weapon: {fileID: 11400000, guid: 46ea98e586057b6479146323f5c69612, type: 2}
+  armour: {fileID: 11400000, guid: 6e2544496343bb748a95f78de89d2496, type: 2}
+  accessory: {fileID: 11400000, guid: 2a371501578ddcc4a9d6aab103363e3f, type: 2}

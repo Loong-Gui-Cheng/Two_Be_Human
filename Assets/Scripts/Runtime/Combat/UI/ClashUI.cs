@@ -133,12 +133,12 @@ public class ClashUI : MonoBehaviour
                 multiplier *= targetEntity.slashResist;
                 break;
 
-            case SkillData.RESISTANCE_TYPE.BLUNT:
-                multiplier *= targetEntity.bluntResist;
-                break;
-
             case SkillData.RESISTANCE_TYPE.PIERCE:
                 multiplier *= targetEntity.pierceResist;
+                break;
+
+            case SkillData.RESISTANCE_TYPE.BLUNT:
+                multiplier *= targetEntity.bluntResist;
                 break;
 
             case SkillData.RESISTANCE_TYPE.MAGIC:

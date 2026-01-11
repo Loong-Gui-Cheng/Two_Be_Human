@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine.TextCore.Text;
 using static SkillData;
 using DG.Tweening;
+using TMPro;
 
 public class CombatSystem : MonoBehaviour
 {
@@ -26,8 +27,12 @@ public class CombatSystem : MonoBehaviour
     [SerializeField, CE_ReadOnly] private int turnCounter;
     [SerializeField, CE_ReadOnly] private int totalDice;
     [SerializeField, CE_ReadOnly] private List<Enemy> onFieldEnemies;
-    private List<Character> characters = new();
-    private readonly Queue<Enemy> enemies = new();
+    private List<Character> onFieldCharacters = new();
+
+
+    private readonly List<Character> characters = new();
+    private readonly List<Enemy> enemies = new();
+    private readonly Queue<Enemy> enemyQueue = new();
 
     [Header("Action Slots (Combat Start)")]
     private readonly List<ActionSlot> unopposedAttacks = new();
@@ -57,6 +62,7 @@ public class CombatSystem : MonoBehaviour
             if (characterGO.TryGetComponent(out Character character))
             {
                 character.Initialise(playerData.combatCharacters[i]);
+                onFieldCharacters.Add(character);
                 characters.Add(character);
             }
         }
@@ -66,22 +72,23 @@ public class CombatSystem : MonoBehaviour
             if (enemyGO.TryGetComponent(out Enemy enemy))
             {
                 enemy.Initialise(enemyData[i]);
-                enemies.Enqueue(enemy);
+                enemies.Add(enemy);
+                enemyQueue.Enqueue(enemy);
             }
         }
-        for (int i = enemies.Count - 1; i >= 0 ; i--)
+        for (int i = enemyQueue.Count - 1; i >= 0 ; i--)
         {
             if (onFieldEnemies.Count >= 3) break;
-            onFieldEnemies.Add(enemies.Dequeue());
+            onFieldEnemies.Add(enemyQueue.Dequeue());
         }
 
         totalDice = playerData.combatCharacters.Count;
 
 
         // Set-up user interface
-        for (int i = 0; i < characters.Count; i++)
+        for (int i = 0; i < onFieldCharacters.Count; i++)
         {
-            Character character = characters[i];
+            Character character = onFieldCharacters[i];
             character.hpUI.SetupUI(character);
         }
         for (int i = 0; i < onFieldEnemies.Count; i++)
@@ -90,13 +97,13 @@ public class CombatSystem : MonoBehaviour
             enemy.hpUI.SetupUI(enemy);
         }
 
-        combatUISystem.InitialiseUI(ref characters);
+        combatUISystem.InitialiseUI(ref onFieldCharacters);
     }
     private void TurnStart()
     {
         AudioController.Instance.PlayUI(AudioController.SOUND_ID.FINGER_SNAP);
 
-        ApplyDynamicFormation(CharacterToTransform(characters), 2f, new Vector2(-5f, 0.4f));
+        ApplyDynamicFormation(CharacterToTransform(onFieldCharacters), 2f, new Vector2(-5f, 0.4f));
         ApplyDynamicFormation(EnemyToTransform(onFieldEnemies), 2f, new Vector2(5f, 0.4f), true);
 
         // Increment no. of player dices and turn.
@@ -105,8 +112,8 @@ public class CombatSystem : MonoBehaviour
         // Add speed dices & randomize speed values.
         for (int i = 0; i < totalDice; i++)
         {
-            int characterIndex = i % characters.Count;
-            Character character = characters[characterIndex];
+            int characterIndex = i % onFieldCharacters.Count;
+            Character character = onFieldCharacters[characterIndex];
             GameObject diceSlot = Instantiate(actionDicePrefab, character.actionGroup);
 
             if (diceSlot.TryGetComponent(out ActionSlot actionSlot))
@@ -139,7 +146,7 @@ public class CombatSystem : MonoBehaviour
 
 
         // Update Combat UI System
-        combatUISystem.ReceiveActionUI(ref characters, ref onFieldEnemies);
+        combatUISystem.ReceiveActionUI(ref onFieldCharacters, ref onFieldEnemies);
         combatUISystem.UpdateTurnCount(turnCounter);
 
         RandomEnemyAttack();
@@ -241,28 +248,28 @@ public class CombatSystem : MonoBehaviour
         allAttacks.Clear();
 
         // Remove any dead characters and enemies from list.
-        for (int i = characters.Count - 1; i >= 0; i--)
+        for (int i = onFieldCharacters.Count - 1; i >= 0; i--)
         {
-            if (characters[i].entity.HP <= 0)
+            if (onFieldCharacters[i].entity.HP <= 0)
             {
-                Destroy(characters[i].gameObject);
-                characters.RemoveAt(i);
+                onFieldCharacters[i].gameObject.SetActive(false);
+                onFieldCharacters.RemoveAt(i);
             }
         }
         for (int i = onFieldEnemies.Count - 1; i >= 0; i--)
         {
             if (onFieldEnemies[i].entity.HP <= 0)
             {
-                Destroy(onFieldEnemies[i].gameObject);
+                onFieldEnemies[i].gameObject.SetActive(false);
                 onFieldEnemies.RemoveAt(i);
             }
         }
 
 
         // Clear all existing characters and enemy action slots
-        for (int i = 0; i < characters.Count; i++)
+        for (int i = 0; i < onFieldCharacters.Count; i++)
         {
-            Character character = characters[i];
+            Character character = onFieldCharacters[i];
 
             for (int j = character.actions.Count - 1; j >= 0; j--)
                 Destroy(character.actions[j].gameObject);
@@ -280,7 +287,7 @@ public class CombatSystem : MonoBehaviour
         }
 
         // If all characters dies => player lose.
-        if (characters.Count <= 0)
+        if (onFieldCharacters.Count <= 0)
         {
             StartCoroutine(LoseBattleAnimation());
             return;
@@ -288,7 +295,7 @@ public class CombatSystem : MonoBehaviour
 
 
         // If all enemies dies => player wins.
-        if (onFieldEnemies.Count <= 0 && enemies.Count <= 0)
+        if (onFieldEnemies.Count <= 0 && enemyQueue.Count <= 0)
         {
             StartCoroutine(WinBattleAnimation());
             return;
@@ -297,8 +304,8 @@ public class CombatSystem : MonoBehaviour
         // Check if there are any back-up enemies. If so, bring them onto field.
         if (onFieldEnemies.Count < 3)
         {
-            if (enemies.Count > 0)
-                onFieldEnemies.Add(enemies.Dequeue());
+            if (enemyQueue.Count > 0)
+                onFieldEnemies.Add(enemyQueue.Dequeue());
         }
 
         StartCoroutine(TurnAnimation());
@@ -450,13 +457,31 @@ public class CombatSystem : MonoBehaviour
     }
     private IEnumerator WinBattleAnimation()
     {
-        for (int i = 0; i < characters.Count; i++)
-            characters[i].hpUI.ToggleUI();
+        // Disable HP UI
+        for (int i = 0; i < onFieldCharacters.Count; i++)
+            onFieldCharacters[i].hpUI.ToggleUI();
+
+        // Calculate EXP gained
+        float EXPGained = 0f;
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            int level = enemies[i].Level;
+            EXPGained += 100f * (1.05f) * (level + 1f);
+        }
+
+        // Update stats to scene.
+        for (int i = 0; i < playerData.combatCharacters.Count; i++)
+        {
+            CharacterData character = playerData.combatCharacters[i];
+            character.HP = characters[i].entity.HP;
+            character.EXP += EXPGained;
+        }
 
         yield return new WaitForSeconds(1f);
 
         combatUISystem.AnimateResultUI(true);
         AudioController.Instance.PlayUI(AudioController.SOUND_ID.ROUND_WIN);
+
         yield break;
     }
     private IEnumerator LoseBattleAnimation()
@@ -803,9 +828,9 @@ public class CombatSystem : MonoBehaviour
     }
     private void HideActionSlotUI()
     {
-        for (int i = 0; i < characters.Count; i++)
+        for (int i = 0; i < onFieldCharacters.Count; i++)
         {
-            Character character = characters[i];
+            Character character = onFieldCharacters[i];
             List<ActionSlot> actions = character.actions;
 
             for (int j = 0; j < actions.Count; j++)

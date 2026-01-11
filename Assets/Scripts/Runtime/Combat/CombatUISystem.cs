@@ -15,8 +15,8 @@ public class CombatUISystem : MonoBehaviour
     [Header("User Interface (UI)")]
     [SerializeField] private Canvas actionUICanvas;
     [SerializeField] private RectTransform memberUIGroup;
-    [SerializeField] private GameObject memberUIPrefab;
-    [SerializeField] private TextMeshProUGUI turn_TMP;
+    //[SerializeField] private GameObject memberUIPrefab;
+    [SerializeField] private TextMeshProUGUI turnNo_TMP;
 
     [Header("Battle UI Animation")]
     [SerializeField] private RectTransform battleUI;
@@ -61,7 +61,7 @@ public class CombatUISystem : MonoBehaviour
     [SerializeField, CE_ReadOnly] private List<ActionSlot> playerActions;
     [SerializeField, CE_ReadOnly] private List<ActionSlot> enemyActions;
 
-    private readonly List<MemberUI> memberUIs = new();
+    //private readonly List<CombatMemberUI> memberUIs = new();
     private List<ActionSlot> characterSlots = new();
     private List<ActionSlot> enemySlots = new();
 
@@ -110,18 +110,18 @@ public class CombatUISystem : MonoBehaviour
 
     public void InitialiseUI(ref List<Character> characters)
     {
-        for (int i = 0; i < characters.Count; i++)
-        {
-            GameObject memberUIGO = Instantiate(memberUIPrefab, memberUIGroup);
-            if (memberUIGO.TryGetComponent(out MemberUI memberUI))
-            {
-                memberUI.InitialiseUI(characters[i].GetData(), characters[i]);
-                memberUIs.Add(memberUI);
-            }
-        }
+        //for (int i = 0; i < characters.Count; i++)
+        //{
+        //    GameObject memberUIGO = Instantiate(memberUIPrefab, memberUIGroup);
+        //    if (memberUIGO.TryGetComponent(out CombatMemberUI memberUI))
+        //    {
+        //        memberUI.InitialiseUI(characters[i].GetData(), characters[i]);
+        //        memberUIs.Add(memberUI);
+        //    }
+        //}
 
-        for (int i = 0; i < memberUIs.Count; i++)
-            memberUIs[i].UpdateUI();
+        //for (int i = 0; i < memberUIs.Count; i++)
+        //    memberUIs[i].UpdateUI();
     }
     public void ReceiveActionUI(ref List<Character> characters, ref List<Enemy> enemies) 
     {
@@ -167,10 +167,7 @@ public class CombatUISystem : MonoBehaviour
             items.RemoveAt(i);
         }
     }
-    public void UpdateTurnCount(int turn)
-    {
-        turn_TMP.text = string.Format("Turns: {0}", turn);
-    }
+    public void UpdateTurnCount(int turn) => turnNo_TMP.text = string.Format("{0}", turn);
     public void ToggleUI()
     {
         actionUICanvas.enabled = !actionUICanvas.enabled;
