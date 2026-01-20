@@ -51,6 +51,8 @@ public class EquipmentManager : MonoBehaviour
     [SerializeField, CE_ReadOnly] private EquipmentData heldEquipment;
     [SerializeField, CE_ReadOnly] private EquipmentUI currentEquipment;
 
+    public static event System.Action OnUpdateEquipmentUI;
+
     private void OnEnable()
     {
         EquipmentInspector.OnEditEquipment += EditEquipment;
@@ -198,9 +200,11 @@ public class EquipmentManager : MonoBehaviour
                 currentCharacter.accessory = null;
                 break;
         }
-
         heldEquipment = null;
+        currentCharacter.RecalculateStat();
+
         UpdateUI();
+        OnUpdateEquipmentUI?.Invoke();
     }
     private void Equip(EquipmentData input)
     {
@@ -218,9 +222,11 @@ public class EquipmentManager : MonoBehaviour
                 currentCharacter.accessory = input;
                 break;
         }
-
         heldEquipment = input;
+        currentCharacter.RecalculateStat();
+
         UpdateUI();
+        OnUpdateEquipmentUI?.Invoke();
     }
     private void UpdateUI()
     {

@@ -1570,6 +1570,8 @@ MonoBehaviour:
   pierce_icon: {fileID: 150025392, guid: a3aa77abe63a1b64d8ffa554c5918a86, type: 3}
   blunt_icon: {fileID: -1410989338, guid: a3aa77abe63a1b64d8ffa554c5918a86, type: 3}
   magic_icon: {fileID: -3157570275069052564, guid: a3aa77abe63a1b64d8ffa554c5918a86, type: 3}
+  coinLit_Sprite: {fileID: 21300000, guid: 89926391bed53ad4fb9744cc60b8eaa6, type: 3}
+  coinUnlit_Sprite: {fileID: 21300000, guid: 16c4956bc223bdf4eb407c049800d9ae, type: 3}
   tossGroup: {fileID: 3538017696032368559}
   coinPrefab: {fileID: 382802361315049157, guid: 6ae71d9654737dc4b9b1777f1fd54032, type: 3}
   coins: []

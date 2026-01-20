@@ -111,6 +111,7 @@ public class IGUIManager : MonoBehaviour
         selectedCanvas.enabled = true;
 
         activeCanvasID = cID;
+        AudioController.Instance.PlayUI(AudioController.SOUND_ID.CLICK);
     }
 
    

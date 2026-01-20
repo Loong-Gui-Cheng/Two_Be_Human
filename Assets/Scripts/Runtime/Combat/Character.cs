@@ -11,6 +11,14 @@ public class Character : MonoBehaviour
     public RectTransform actionGroup;
     public List<ActionSlot> actions;
 
+    [Header("Runtime (Resonant Points)")]
+    public int maxResonantPoints = 6;
+    public int resonantPointsUsing;
+    public int resonantPointsAvailable;
+    public RectTransform resonantGroup;
+    public GameObject resonantPointPrefab;
+    public List<GameObject> resonantPointUI;
+
     [Header("User Interface (UI)")]
     public HPUI hpUI;
     public CoinUI coinUI;

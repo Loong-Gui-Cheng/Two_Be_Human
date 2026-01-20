@@ -14,10 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   resistance: 1
-  effectPrefab: {fileID: 0}
-  Name: Slide
   icon: {fileID: 21300000, guid: 250f9b142bdb9b0468a797d47a70da5e, type: 3}
+  Name: Slide
   description: 
   baseCoinPower: 6
   incrementCoinPower: 9
-  coins: 1
+  coins:
+  - infliction: []
+    gain: []
+  - infliction: []
+    gain: []
+  effectPrefab: {fileID: 0}

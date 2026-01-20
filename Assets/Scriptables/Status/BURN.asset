@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ce78ef6953ff245a113c7c054faf6e, type: 3}
+  m_Name: BURN
+  m_EditorClassIdentifier: Assembly-CSharp::StatusData
+  type: 2
+  icon: {fileID: -8983555436316507648, guid: ad6cabe2a6104b44abeddc7d869c3565, type: 3}
+  Name: Burn
+  description: Deals damage over time based on potency.
+  effectPrefab: {fileID: 1736461811914814488, guid: 1c64f2573a5ac9149b0eb39eb0cd7aac, type: 3}

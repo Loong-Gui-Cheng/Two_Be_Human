@@ -56,7 +56,10 @@ MonoBehaviour:
   shouldCycleBGM: 0
   BGMList: []
   m_SoundBubble: {fileID: 3825383899224185519, guid: daa0c1ba751d73a4e9ad9bf6fe126270, type: 3}
-  SFX_ActionSelect: {fileID: 8300000, guid: 45a5e92dc06cb734c8c61348c9e194bb, type: 3}
+  UI_Click: {fileID: 8300000, guid: 2ea5de41e04afd749b5be68a8aa35324, type: 3}
+  UI_ActionClick: {fileID: 8300000, guid: 45a5e92dc06cb734c8c61348c9e194bb, type: 3}
+  UI_ActionHover: {fileID: 8300000, guid: 2de165b4f3cf82f4dba3108fad3e7451, type: 3}
+  UI_Inspect: {fileID: 8300000, guid: 8bc2333eb3a92af4c8dcf76bd1fdfe65, type: 3}
   SFX_TurnStart: {fileID: 8300000, guid: 83995f724ebf58f4592efc281f3dfc61, type: 3}
   SFX_FingerSnap: {fileID: 8300000, guid: dd3d4f1417aa46546b81a08a8374cd81, type: 3}
   UI_CoinWin: {fileID: 8300000, guid: ed9ed3b4079f0924a8a351a026fe652b, type: 3}

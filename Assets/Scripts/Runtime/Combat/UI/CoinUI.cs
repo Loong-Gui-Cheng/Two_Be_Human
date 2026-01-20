@@ -23,6 +23,10 @@ public class CoinUI : MonoBehaviour
     [SerializeField] private Sprite blunt_icon;
     [SerializeField] private Sprite magic_icon;
 
+    [Header("Damage Types (UI)")]
+    [SerializeField] private Sprite coinLit_Sprite;
+    [SerializeField] private Sprite coinUnlit_Sprite;
+
     [Header("Coins")]
     [SerializeField] private RectTransform tossGroup;
     [SerializeField] private GameObject coinPrefab;
@@ -30,7 +34,7 @@ public class CoinUI : MonoBehaviour
 
     private const float DURATION_COIN_TOSS = 0.8f;
     private const float DURATION_COIN_BREAK = 0.3f;
-    private const float DURATION_ATTACK = 0.8f;
+    private const float DURATION_ATTACK = 0.6f;
 
     private readonly WaitForSeconds YIELD_COIN_TOSS = new(DURATION_COIN_TOSS);
     private readonly WaitForSeconds YIELD_COIN_BREAK = new(DURATION_COIN_BREAK);
@@ -59,7 +63,7 @@ public class CoinUI : MonoBehaviour
         incrementPower_TMP.text = string.Format("+{0}", input.incrementCoinPower);
         coinPower_TMP.text = string.Format("{0}", input.baseCoinPower);
 
-        for (int i = 0; i < input.coins; i++)
+        for (int i = 0; i < input.coins.Count; i++)
         {
             GameObject coinGO = Instantiate(coinPrefab, tossGroup);
             if (coinGO.TryGetComponent(out Image coinSprite))
@@ -112,7 +116,7 @@ public class CoinUI : MonoBehaviour
                 {
                     headCoins--;
                     coinPower += incrementPower;
-                    coins[i].color = Color.yellow;
+                    coins[i].sprite = coinLit_Sprite;
                     coinPower_TMP.color = Color.white;
 
                     coinPower_TMP.text = string.Format("{0}", coinPower);
@@ -122,7 +126,7 @@ public class CoinUI : MonoBehaviour
                 else
                 {
                     tailCoins--;
-                    coins[i].color = Color.black;
+                    coins[i].sprite = coinUnlit_Sprite;
                     coinPower_TMP.color = Color.gray6;
 
                     AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_FAIL);
@@ -132,7 +136,7 @@ public class CoinUI : MonoBehaviour
             {
                 headCoins--;
                 coinPower += incrementPower;
-                coins[i].color = Color.yellow;
+                coins[i].sprite = coinLit_Sprite;
                 coinPower_TMP.color = Color.white;
 
                 coinPower_TMP.text = string.Format("{0}", coinPower);
@@ -142,7 +146,7 @@ public class CoinUI : MonoBehaviour
             else
             {
                 tailCoins--;
-                coins[i].color = Color.black;
+                coins[i].sprite = coinUnlit_Sprite;
                 coinPower_TMP.color = Color.gray6;
 
                 AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_FAIL);
@@ -175,14 +179,14 @@ public class CoinUI : MonoBehaviour
         {
             finalPower += increment;
             coinLight.enabled = true;
-            coins[index].color = Color.yellow;
+            coins[index].sprite = coinLit_Sprite;
             coinPower_TMP.color = Color.white;
 
             AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_WIN);
         }
         else
         {
-            coins[index].color = Color.black;
+            coins[index].sprite = coinUnlit_Sprite;
             coinPower_TMP.color = Color.gray6;
 
             AudioController.Instance.PlayUI(AudioController.SOUND_ID.COIN_FAIL);

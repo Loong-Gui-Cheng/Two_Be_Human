@@ -15,25 +15,33 @@ MonoBehaviour:
   id: 2
   Name: Faust
   position: 2
+  portrait: {fileID: 21300000, guid: 9eafa69b6b9f89246a340f3f1d7b49b1, type: 3}
   Level: 24
-  EXP: 0
+  EXP: 629.99994
   RequiredEXP: 2875
-  MaxHP: 500
-  HP: 347
-  ATK: 47
-  DEF: 34
+  BaseMaxHP: 200
+  BaseATK: 53
+  BaseDEF: 12
+  BaseCritChance: 0.1
+  Base_BaseCoinBoost: 0
+  Base_IncrementCoinBoost: 0
+  MaxHP: 200
+  HP: 183
+  ATK: 88
+  DEF: 32
+  CritChance: 0.1
+  BaseCoinBoost: 0
+  IncrementCoinBoost: 0
   minSPD: 1
   maxSPD: 7
   slashResist: 2
   pierceResist: 1
   bluntResist: 0.5
   magicResist: 1
-  slot: 0
-  portrait: {fileID: 21300000, guid: 9eafa69b6b9f89246a340f3f1d7b49b1, type: 3}
   skills:
   - {fileID: 11400000, guid: 25d3c336adda89949bb809a0ab73ba5c, type: 2}
   - {fileID: 11400000, guid: a4de86f277efc2146a7cad628af9f245, type: 2}
   - {fileID: 11400000, guid: cd59eae823c499447ac287f4a4000d95, type: 2}
-  weapon: {fileID: 0}
-  armour: {fileID: 0}
+  weapon: {fileID: 11400000, guid: 4a87f13be298d8a4f9582a03f618e592, type: 2}
+  armour: {fileID: 11400000, guid: 6e2544496343bb748a95f78de89d2496, type: 2}
   accessory: {fileID: 0}

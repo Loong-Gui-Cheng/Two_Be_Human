@@ -15,10 +15,11 @@ MonoBehaviour:
   saveID: 0
   worldID: 0
   position: {x: 0, y: 0}
-  gold: 105
+  gold: 106
   teamLevel: 15
   teamEXP: 0
-  teamAvailablePoints: 0
+  teamAvailablePoints: 22
+  unlockedStatTypes: 
   characters:
   - {fileID: 11400000, guid: c35ed6e1b6b2c1c47a8638b41dc54fec, type: 2}
   - {fileID: 11400000, guid: b4051a10c7d5f6741a11360edd6d76fc, type: 2}

@@ -29,9 +29,9 @@ public class SkillMenuUI : MonoBehaviour
 
         skill_Icon.sprite = skillData.icon;
         baseCoinPower_TMP.text = string.Format("{0}", skillData.baseCoinPower);
-        incrementPower_TMP.text = string.Format("{0}", skillData.incrementCoinPower);
+        incrementPower_TMP.text = string.Format("+{0}", skillData.incrementCoinPower);
 
-        for (int i = 0; i < skillData.coins; i++)
+        for (int i = 0; i < skillData.coins.Count; i++)
         {
             GameObject coin = Instantiate(coinTossPrefab, coinTossGroup);
         }

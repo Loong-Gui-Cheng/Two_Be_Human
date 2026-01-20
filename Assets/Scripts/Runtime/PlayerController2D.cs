@@ -166,6 +166,8 @@ public class PlayerController2D : MonoBehaviour
     }
     private void AttackControl()
     {
+        if (IsInMenu) return;
+
         if (attackAction.WasPressedThisFrame())
         {
             animator.Play("Attack");

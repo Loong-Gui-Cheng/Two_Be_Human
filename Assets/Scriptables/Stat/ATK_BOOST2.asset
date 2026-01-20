@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5c968f44da9c7845bdab94737ffab04, type: 3}
+  m_Name: ATK_BOOST2
+  m_EditorClassIdentifier: Assembly-CSharp::StatData
+  type: 4
+  icon: {fileID: -2080060617, guid: a3aa77abe63a1b64d8ffa554c5918a86, type: 3}
+  backgroundColor: {r: 0.6431373, g: 0.18431373, b: 0.08235294, a: 1}
+  backgroundColorUnlockable: {r: 0.38431373, g: 0.16862746, b: 0.12156863, a: 1}

@@ -51,6 +51,16 @@ public class TeamManager : MonoBehaviour
 
     public static event System.Action OnUpdateLoadoutUI;
 
+    private void OnEnable()
+    {
+        EquipmentManager.OnUpdateEquipmentUI += UpdateUI;
+        StatTreeSystem.OnUpdateStatUI += UpdateUI;
+    }
+    private void OnDisable()
+    {
+        EquipmentManager.OnUpdateEquipmentUI -= UpdateUI;
+        StatTreeSystem.OnUpdateStatUI -= UpdateUI;
+    }
     private void Start()
     {
         OnLoad();
@@ -71,6 +81,7 @@ public class TeamManager : MonoBehaviour
                 // Update UI
                 card.loadout_Button.onClick.AddListener(() => LoadoutMember(card));
                 card.inspect_Button.onClick.AddListener(() => InspectMember(card));
+                card.inspect_Button.onClick.AddListener(() => { AudioController.Instance.PlayUI(AudioController.SOUND_ID.CHARACTER_INSPECT); });
                 card.SetData(charUnlocked[i]);
                 card.UpdateLoadoutUI();
 
@@ -127,7 +138,12 @@ public class TeamManager : MonoBehaviour
 
         currentCharacter = card;
         currentCharacter.ToggleInspectUI(true);
+        UpdateUI();
+    }
+    private void UpdateUI()
+    {
         CharacterData character = currentCharacter.GetData();
+        if (character == null) return;
 
         // Clear dirty ui
         for (int i = skills.Count - 1; i >= 0; i--)
@@ -171,7 +187,7 @@ public class TeamManager : MonoBehaviour
         name_TMP.text = string.Format("{0}", character.Name);
         level_TMP.text = string.Format("LV {0}", character.Level);
         hp_TMP.text = string.Format("{0} / {1}", character.HP, character.MaxHP);
-        nextEXP_TMP.text = string.Format("Next EXP: {0}", character.RequiredEXP - character.EXP);
+        nextEXP_TMP.text = string.Format("Next EXP: {0}", Mathf.RoundToInt(character.RequiredEXP - character.EXP));
 
         atk_TMP.text = string.Format("ATK: {0}", character.ATK);
         def_TMP.text = string.Format("DEF: {0}", character.DEF);

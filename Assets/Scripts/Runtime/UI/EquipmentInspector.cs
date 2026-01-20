@@ -65,6 +65,7 @@ public class EquipmentInspector : MonoBehaviour
 
                 // Update UI
                 card.inspect_Button.onClick.AddListener(() => InspectMember(card));
+                card.inspect_Button.onClick.AddListener(() => { AudioController.Instance.PlayUI(AudioController.SOUND_ID.CHARACTER_INSPECT); });
                 card.SetData(charUnlocked[i]);
                 card.UpdateLoadoutUI();
 

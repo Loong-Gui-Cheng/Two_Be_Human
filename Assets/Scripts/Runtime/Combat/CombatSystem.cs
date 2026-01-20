@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEditor;
 using System.Collections;
-using UnityEngine.TextCore.Text;
 using static SkillData;
-using DG.Tweening;
+using UnityEngine.TextCore.Text;
 using TMPro;
 
 public class CombatSystem : MonoBehaviour
@@ -22,6 +21,8 @@ public class CombatSystem : MonoBehaviour
     [SerializeField] private Transform enemyGroup;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject actionDicePrefab;
+    [SerializeField] private GameObject statusPrefab;
+    [SerializeField] private GameObject statusAppearUIPrefab;
 
     [Header("Tracker")]
     [SerializeField, CE_ReadOnly] private int turnCounter;
@@ -103,11 +104,25 @@ public class CombatSystem : MonoBehaviour
     {
         AudioController.Instance.PlayUI(AudioController.SOUND_ID.FINGER_SNAP);
 
-        ApplyDynamicFormation(CharacterToTransform(onFieldCharacters), 2f, new Vector2(-5f, 0.4f));
-        ApplyDynamicFormation(EnemyToTransform(onFieldEnemies), 2f, new Vector2(5f, 0.4f), true);
+        ApplyDynamicFormation(CharacterToTransform(onFieldCharacters), 2.5f, new Vector2(-5f, 0.4f));
+        ApplyDynamicFormation(EnemyToTransform(onFieldEnemies), 2.5f, new Vector2(5f, 0.4f), true);
+
+        // Trigger OnEnter statuses (if any).
+        for (int i = 0; i < onFieldCharacters.Count; i++)
+        {
+            Character character = onFieldCharacters[i];
+            OnEnterStatus(character.entity);
+        }
+        for (int i = 0; i < onFieldEnemies.Count; i++)
+        {
+            Enemy enemy = onFieldEnemies[i];
+            OnEnterStatus(enemy.entity);
+        }
+
 
         // Increment no. of player dices and turn.
         if (turnCounter > 1 && totalDice < MAX_DICE) totalDice += 1;
+
 
         // Add speed dices & randomize speed values.
         for (int i = 0; i < totalDice; i++)
@@ -142,7 +157,6 @@ public class CombatSystem : MonoBehaviour
                 enemy.actions.Add(actionSlot);
             }
         }
-
 
 
         // Update Combat UI System
@@ -247,26 +261,40 @@ public class CombatSystem : MonoBehaviour
         clashAttacks.Clear();
         allAttacks.Clear();
 
-        // Remove any dead characters and enemies from list.
+
+        // Clean up any dead entities.
         for (int i = onFieldCharacters.Count - 1; i >= 0; i--)
         {
-            if (onFieldCharacters[i].entity.HP <= 0)
+            // Tick down all status counts.
+            Character character = onFieldCharacters[i];
+            if (character.entity.HP <= 0)
             {
-                onFieldCharacters[i].gameObject.SetActive(false);
+                character.gameObject.SetActive(false);
                 onFieldCharacters.RemoveAt(i);
+                continue;
             }
+
+            if (OnExitStatus(character.entity, i) >= 0)
+                onFieldEnemies.RemoveAt(i);
         }
         for (int i = onFieldEnemies.Count - 1; i >= 0; i--)
         {
-            if (onFieldEnemies[i].entity.HP <= 0)
+            // Tick down all status counts.
+            Enemy enemy = onFieldEnemies[i];
+            if (enemy.entity.HP <= 0)
             {
-                onFieldEnemies[i].gameObject.SetActive(false);
+                enemy.gameObject.SetActive(false);
                 onFieldEnemies.RemoveAt(i);
+                continue;
             }
+
+            // Status killed enemy
+            if (OnExitStatus(enemy.entity, i) >= 0)
+                onFieldEnemies.RemoveAt(i);
         }
 
 
-        // Clear all existing characters and enemy action slots
+        // Clear all existing action slots
         for (int i = 0; i < onFieldCharacters.Count; i++)
         {
             Character character = onFieldCharacters[i];
@@ -286,6 +314,7 @@ public class CombatSystem : MonoBehaviour
             enemy.actions.Clear();
         }
 
+
         // If all characters dies => player lose.
         if (onFieldCharacters.Count <= 0)
         {
@@ -293,13 +322,13 @@ public class CombatSystem : MonoBehaviour
             return;
         }
 
-
         // If all enemies dies => player wins.
         if (onFieldEnemies.Count <= 0 && enemyQueue.Count <= 0)
         {
             StartCoroutine(WinBattleAnimation());
             return;
         }
+
  
         // Check if there are any back-up enemies. If so, bring them onto field.
         if (onFieldEnemies.Count < 3)
@@ -312,6 +341,101 @@ public class CombatSystem : MonoBehaviour
         Debug.Log("[Combat System] Turn End!");
     }
 
+    // Status Functions
+    #region Status Functions
+    private void OnEnterStatus(CombatEntity entity)
+    {
+        List<Status> statusList = entity.statusList;
+        for (int k = 0; k < statusList.Count; k++)
+        {
+            Status status = statusList[k];
+            status.effect.OnEnter(status, entity, onFieldCharacters, onFieldEnemies);
+        }
+    }
+    private int OnExitStatus(CombatEntity entity, int i)
+    {
+        List<Status> statuses = entity.statusList;
+        for (int k = statuses.Count - 1; k >= 0; k--)
+        {
+            Status status = statuses[k];
+            StatusData data = status.data;
+            status.effect.OnExit(status, entity);
+
+            // Entity died to DoT
+            if (entity.HP <= 0)
+            {
+                entity.HP = 0;
+                entity.SpawnVFX(CombatEntity.VFX_ID.BLOOD);
+                AudioController.Instance.PlayUI(AudioController.SOUND_ID.DEAD);
+                entity.gameObject.SetActive(false);
+                return i;
+            }
+            // Count is negative, remove all references to it.
+            if (status.count <= 0)
+            {
+                Destroy(status.gameObject);
+                entity.statusDictionary.Remove(data.type);
+                statuses.RemoveAt(k);
+            }
+        }
+
+        return -1;
+    }
+    private void OnCoinStatusInfliction(List<CoinStatus> coinEffects, CombatEntity target, bool IsHeads)
+    {
+        for (int k = 0; k < coinEffects.Count; k++)
+        {
+            CoinStatus debuff = coinEffects[k];
+            StatusData debuffData = coinEffects[k].status;
+            Status runtime = null;
+            bool conditionMet = false;
+
+            // Trigger -> Effect
+            switch (debuff.trigger)
+            {
+                case CoinStatus.TRIGGER.HIT:
+                    conditionMet = true;
+                    break;
+                case CoinStatus.TRIGGER.HEADS:
+                    if (IsHeads) conditionMet = true;
+                    break;
+                case CoinStatus.TRIGGER.TAILS:
+                    if (!IsHeads) conditionMet = true;
+                    break;
+            }
+            if (conditionMet)
+            {
+                // Status already exists - add to stack.
+                if (target.statusDictionary.ContainsKey(debuffData.type))
+                {
+                    target.statusDictionary.TryGetValue(debuffData.type, out runtime);
+                    runtime.potency += debuff.potency;
+                    runtime.count += debuff.count;
+                }
+                // Status is new, add to UI and store a reference to it.
+                else
+                {
+                    GameObject statusGO = Instantiate(statusPrefab, target.statusGroup);
+                    if (statusGO.TryGetComponent(out runtime))
+                    {
+                        runtime.SetData(debuffData, debuff.potency, debuff.count);
+                        target.statusList.Add(runtime);
+                        target.statusDictionary.Add(debuffData.type, runtime);
+                    }
+                }
+
+                GameObject statusAppearGO = Instantiate(statusAppearUIPrefab, target.transformStatusAppear);
+                statusAppearGO.transform.localPosition = Vector3.zero;
+
+                if (statusAppearGO.TryGetComponent(out StatusAppearUI statusAppearUI))
+                    statusAppearUI.SetUpUI(runtime.data, runtime.count);
+
+                Destroy(statusAppearGO, 1f);
+                runtime.UpdateUI();
+            }
+        }
+    }
+    #endregion
 
     // Enemy AI Functions
     #region Enemy AI
@@ -387,7 +511,7 @@ public class CombatSystem : MonoBehaviour
         {
             bool IsOdd = !(i % 2 == 0);
 
-            float yOffset =  spacing;
+            float yOffset =  spacing + 1f;
             float xOffset = Mathf.Ceil(i / 2) * spacing;
 
             // Every even index = flip y value
@@ -420,14 +544,14 @@ public class CombatSystem : MonoBehaviour
             {
                 float offset = i * spacing;
 
-                Vector3 position = new(origin.x + (offset * flip), origin.y + offset, 0f);
+                Vector3 position = new(origin.x + (offset * flip), origin.y + offset + 1f, 0f);
                 entities[i].transform.position = position;
             }
             for (int i = membersSplit + 1, j = 1; i < count; i++, j++)
             {
                 float offset = j * spacing;
 
-                Vector3 position = new(origin.x + (offset * flip), origin.y - offset, 0f);
+                Vector3 position = new(origin.x + (offset * flip), origin.y - offset - 1f, 0f);
                 entities[i].transform.position = position;
             }
         }
@@ -539,13 +663,15 @@ public class CombatSystem : MonoBehaviour
             if (action.character != null)
             {
                 character.coinUI.SetupUI(characterAction.skillData);
-                StartCoroutine(AttackAnimation(character.entity, enemy.entity, characterAction, characterAction.skillData.coins));
+                int maxCoins = characterAction.skillData.coins.Count;
+                StartCoroutine(AttackAnimation(character.entity, enemy.entity, characterAction, maxCoins, maxCoins));
             }
             // This action belongs to an enemy.
             else
             {
                 enemy.coinUI.SetupUI(enemyAction.skillData);
-                StartCoroutine(AttackAnimation(enemy.entity, character.entity, enemyAction, enemyAction.skillData.coins));
+                int maxCoins = enemyAction.skillData.coins.Count;
+                StartCoroutine(AttackAnimation(enemy.entity, character.entity, enemyAction, maxCoins, maxCoins));
             }
         }
         yield break;
@@ -557,16 +683,18 @@ public class CombatSystem : MonoBehaviour
 
         //1.  Set-up coin flip variables
         SkillData characterSkill = characterAction.skillData;
-        int characterCoins = character.coinUI.coins.Count;
+        int maxCharacterCoins = character.coinUI.coins.Count;
+        int characterCoins = maxCharacterCoins;
         int cHeads = 0;
         int cTails = 0;
 
         SkillData enemySkill = enemyAction.skillData;
+        int maxEnemyCoins = enemy.coinUI.coins.Count;
         int enemyCoins = enemy.coinUI.coins.Count;
         int eHeads = 0;
         int eTails = 0;
 
-        int characterPower = characterSkill.baseCoinPower;
+        int characterPower = characterSkill.baseCoinPower + character.GetData().BaseCoinBoost;
         int enemyPower = enemySkill.baseCoinPower;
 
 
@@ -644,30 +772,32 @@ public class CombatSystem : MonoBehaviour
         character.coinUI.ResetSkillUI(characterAction.skillData.baseCoinPower);
         enemy.coinUI.ResetSkillUI(enemyAction.skillData.baseCoinPower);
 
+        // Player attacks enemy
         if (characterCoins > 0)
         {
             enemy.coinUI.ToggleUI();
             enemy.coinUI.ResetCoinUI();
-            StartCoroutine(AttackAnimation(character.entity, enemy.entity, characterAction, characterCoins));
+            StartCoroutine(AttackAnimation(character.entity, enemy.entity, characterAction, characterCoins, maxCharacterCoins));
         }
+        // Enemy attacks player
         else
         {
             character.coinUI.ToggleUI();
             character.coinUI.ResetCoinUI();
-            StartCoroutine(AttackAnimation(enemy.entity, character.entity, enemyAction, enemyCoins));
+            StartCoroutine(AttackAnimation(enemy.entity, character.entity, enemyAction, enemyCoins, maxEnemyCoins));
         }
         yield break;
     }
-    private IEnumerator AttackAnimation(CombatEntity host, CombatEntity target, ActionSlot hostAction, int coins)
+    private IEnumerator AttackAnimation(CombatEntity host, CombatEntity target, ActionSlot hostAction, int coinsLeft, int maxCoins)
     {
-        float attackInterval = host.coinUI.CalculateCoinDuration(coins);
+        float attackInterval = host.coinUI.CalculateCoinDuration(coinsLeft);
         WaitForSeconds delay = new(attackInterval / 3f);
 
         int coinPower = hostAction.skillData.baseCoinPower;
         int incrementPower = hostAction.skillData.incrementCoinPower;
         RESISTANCE_TYPE resistance_type = hostAction.skillData.resistance;
 
-        for (int i = 0; i < coins; i++)
+        for (int i = 0; i < coinsLeft; i++)
         {
             // target died during one of coin attacks.
             if (target.HP <= 0) break;
@@ -694,21 +824,25 @@ public class CombatSystem : MonoBehaviour
                 case RESISTANCE_TYPE.SLASH:
                     damageMultiplier *= target.slashResist;
                     resist = target.slashResist;
+                    AudioController.Instance.PlayUI(AudioController.SOUND_ID.SLASH);
                     break;
 
                 case RESISTANCE_TYPE.PIERCE:
                     damageMultiplier *= target.pierceResist;
                     resist = target.pierceResist;
+                    AudioController.Instance.PlayUI(AudioController.SOUND_ID.BLUNT);
                     break;
 
                 case RESISTANCE_TYPE.BLUNT:
                     damageMultiplier *= target.bluntResist;
                     resist = target.bluntResist;
+                    AudioController.Instance.PlayUI(AudioController.SOUND_ID.PIERCE);
                     break;
 
                 case RESISTANCE_TYPE.MAGIC:
                     damageMultiplier *= target.magicResist;
                     resist = target.magicResist;
+                    AudioController.Instance.PlayUI(AudioController.SOUND_ID.MAGIC);
                     break;
             }
 
@@ -726,6 +860,7 @@ public class CombatSystem : MonoBehaviour
             {
                 IsCrit = true;
                 damageMultiplier *= 2f;
+                AudioController.Instance.PlayUI(AudioController.SOUND_ID.CRITICAL);
             }
 
             // Add in damage multipliers and calculate new target hp.
@@ -742,28 +877,21 @@ public class CombatSystem : MonoBehaviour
             target.AnimateCharacter(CombatEntity.Animation_ID.HIT);
             target.HP = targetNewHP;
 
-            switch (resistance_type)
-            {
-                case RESISTANCE_TYPE.SLASH:
-                    AudioController.Instance.PlayUI(AudioController.SOUND_ID.SLASH);
-                    break;
 
-                case RESISTANCE_TYPE.BLUNT:
-                    AudioController.Instance.PlayUI(AudioController.SOUND_ID.BLUNT);
-                    break;
+            // On Coin Status Trigger
+            List<Coin> hostCoins = hostAction.skillData.coins;
+            int startCoinIndex = i;
+            Coin coin = null;
 
-                case RESISTANCE_TYPE.PIERCE:
-                    AudioController.Instance.PlayUI(AudioController.SOUND_ID.PIERCE);
-                    break;
+            // Start at a certain coin if prior coins broke before.
+            if (coinsLeft < maxCoins) startCoinIndex += (maxCoins - coinsLeft);
+            coin = hostCoins[startCoinIndex];
 
-                case RESISTANCE_TYPE.MAGIC:
-                    AudioController.Instance.PlayUI(AudioController.SOUND_ID.MAGIC);
-                    break;
-            }
-            if (IsCrit)
-            {
-                AudioController.Instance.PlayUI(AudioController.SOUND_ID.CRITICAL);
-            }
+            // Calculate buff/debuff conditions for the selected coin.
+            List<CoinStatus> inflictions = coin.infliction;
+            List<CoinStatus> gains = coin.gain;
+            OnCoinStatusInfliction(inflictions, target, IsHeads);
+            OnCoinStatusInfliction(gains, host, IsHeads);
 
             yield return delay;
         }

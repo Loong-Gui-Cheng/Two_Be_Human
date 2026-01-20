@@ -67,7 +67,7 @@ public class SkillUI : MonoBehaviour
                 break;
         }
 
-        for (int i = 0; i < skill.coins; i++)
+        for (int i = 0; i < skill.coins.Count; i++)
         {
             GameObject coinGO = Instantiate(coinPrefab, coinGroup);
             if (coinGO.TryGetComponent(out Image coinImage)) coins.Add(coinImage);

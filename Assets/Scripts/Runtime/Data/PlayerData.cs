@@ -17,6 +17,7 @@ public class PlayerData : ScriptableObject
     public int teamLevel;
     public float teamEXP;
     public int teamAvailablePoints;
+    public List<StatData.TYPE> unlockedStatTypes;
     public List<CharacterData> characters;
     public List<CharacterData> combatCharacters;
 

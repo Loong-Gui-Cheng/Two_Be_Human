@@ -16,10 +16,21 @@ MonoBehaviour:
   Name: Binah
   position: -1
   Level: 129
-  MaxHP: 490
-  HP: 234
-  ATK: 66
-  DEF: 66
+  EXP: 0
+  RequiredEXP: 16000
+  BaseMaxHP: 126
+  BaseATK: 124
+  BaseDEF: 23
+  BaseCritChance: 0.1
+  Base_BaseCoinBoost: 0
+  Base_IncrementCoinBoost: 0
+  MaxHP: 126
+  HP: 124
+  ATK: 134
+  DEF: 43
+  CritChance: 0.1
+  BaseCoinBoost: 0
+  IncrementCoinBoost: 0
   minSPD: 2
   maxSPD: 5
   slashResist: 2

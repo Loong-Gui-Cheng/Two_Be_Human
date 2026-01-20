@@ -16,10 +16,21 @@ MonoBehaviour:
   Name: Sinclair
   position: 0
   Level: 36
-  MaxHP: 358
-  HP: 123
-  ATK: 12
-  DEF: 23
+  EXP: 0
+  RequiredEXP: 4375
+  BaseMaxHP: 123
+  BaseATK: 245
+  BaseDEF: 12
+  BaseCritChance: 0.1
+  Base_BaseCoinBoost: 0
+  Base_IncrementCoinBoost: 0
+  MaxHP: 123
+  HP: 89
+  ATK: 255
+  DEF: 12
+  CritChance: 0.1
+  BaseCoinBoost: 0
+  IncrementCoinBoost: 0
   minSPD: 1
   maxSPD: 6
   slashResist: 1

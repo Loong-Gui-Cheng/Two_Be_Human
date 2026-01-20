@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2ce78ef6953ff245a113c7c054faf6e, type: 3}
+  m_Name: ATTACK_UP_1
+  m_EditorClassIdentifier: Assembly-CSharp::StatusData
+  type: 0
+  icon: {fileID: -3765259849123518339, guid: 8e8d494dc2e79594d925484511df9d50, type: 3}
+  Name: Attack Up
+  description: Buffs user's attack by 10% * potency.
+  effectPrefab: {fileID: 1736461811914814488, guid: a0cd94ed235f06a4aa7912f6ec29ffd7, type: 3}

@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 5da65c84543a7414f86cb6a7e8314bf1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - startPanel: {instanceID: 0}
+  - mainPanel: {instanceID: 0}
+  - choicePanel: {instanceID: 0}
+  - textDOName: {instanceID: 0}
+  - textField: {instanceID: 0}
+  - start: {instanceID: 0}
+  - skip: {instanceID: 0}
+  - auto: {instanceID: 0}
+  - prefabChoiceButton: {fileID: 4477673006325766432, guid: 1d8471ff988b41f4a8e4aac7cd1d011c,
+      type: 3}
+  - target: {instanceID: 0}
+  - currentNPC: {instanceID: 0}
+  - currentBranch: {instanceID: 0}
+  executionOrder: 210
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

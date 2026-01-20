@@ -30,6 +30,9 @@ public class AudioController : Singleton<AudioController>
         ERROR = 2,
         SUCCESS = 3,
 
+        ACTION_CLICK = 20,
+        ACTION_HOVER = 21,
+        CHARACTER_INSPECT = 22,
 
         TURN_START = 30,
         FINGER_SNAP = 31,
@@ -59,7 +62,10 @@ public class AudioController : Singleton<AudioController>
     [SerializeField] private GameObject m_SoundBubble;
 
     [Header("Audio SFX")]
-    [SerializeField] private AudioClip SFX_ActionSelect;
+    [SerializeField] private AudioClip UI_Click;
+    [SerializeField] private AudioClip UI_ActionClick;
+    [SerializeField] private AudioClip UI_ActionHover;
+    [SerializeField] private AudioClip UI_Inspect;
 
     [SerializeField] private AudioClip SFX_TurnStart;
     [SerializeField] private AudioClip SFX_FingerSnap;
@@ -112,8 +118,12 @@ public class AudioController : Singleton<AudioController>
                 SFXSrcPool.Add(sources[i]);
         }
 
-        // Add to hash map for performance.
-        SFX_2D_MAP.Add((int)SOUND_ID.CLICK, SFX_ActionSelect);
+        // Add to hash map for reference.
+        SFX_2D_MAP.Add((int)SOUND_ID.CLICK, UI_Click);
+
+        SFX_2D_MAP.Add((int)SOUND_ID.ACTION_CLICK, UI_ActionClick);
+        SFX_2D_MAP.Add((int)SOUND_ID.ACTION_HOVER, UI_ActionHover);
+        SFX_2D_MAP.Add((int)SOUND_ID.CHARACTER_INSPECT, UI_Inspect);
 
         SFX_2D_MAP.Add((int)SOUND_ID.TURN_START, SFX_TurnStart);
         SFX_2D_MAP.Add((int)SOUND_ID.FINGER_SNAP, SFX_FingerSnap);

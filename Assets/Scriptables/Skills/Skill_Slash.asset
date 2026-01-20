@@ -14,10 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   resistance: 0
-  effectPrefab: {fileID: 0}
-  Name: Slash
   icon: {fileID: 21300000, guid: 4d5b3aab0366f2041878583b759e5c4b, type: 3}
+  Name: Slash
   description: 
   baseCoinPower: 6
   incrementCoinPower: 3
-  coins: 2
+  onUseEffect: {fileID: 0}
+  coins:
+  - infliction:
+    - trigger: 0
+      status: {fileID: 11400000, guid: e43b2c75a2f3a9a4fbb072c147523e99, type: 2}
+      potency: 2
+      count: 1
+    gain: []
+    description: '<color=green>[On Hit]</color> Inflict 2 <color=red>Burn</color>
+      and  +1 <color=red>Burn</color> Count
+
+'
+  - infliction:
+    - trigger: 0
+      status: {fileID: 11400000, guid: e43b2c75a2f3a9a4fbb072c147523e99, type: 2}
+      potency: 1
+      count: 1
+    gain:
+    - trigger: 0
+      status: {fileID: 11400000, guid: d5f6a524e7331474ba00121db879ffb4, type: 2}
+      potency: 1
+      count: 2
+    description: '<color=green>[On Hit]</color> Inflict 1 <color=red>Burn</color>
+      and  +1 <color=red>Burn</color> Count
+
+      <color=green>[On Hit]</color>
+      Gain 1 <color=red>Attack Up</color> and  +2 <color=red>Attack Up</color> Count
+
+'

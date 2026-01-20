@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 
-public class ActionSlot : MonoBehaviour
+public class ActionSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("Reference")]
     [SerializeField, CE_ReadOnly] private string id;
@@ -111,11 +113,12 @@ public class ActionSlot : MonoBehaviour
         // Remove ally clash attack from enemy (if any)
         if (targetSlot != null) targetSlot.RemoveClashAction(id);
 
-        // Reset UI
         icon.sprite = slot_background;
-        IsClashing = false;
         targetSlot = null;
+        skillData = null;
         action = null;
+
+        IsClashing = false;
     }
 
     public void SetSPD(int speedValue)
@@ -155,6 +158,22 @@ public class ActionSlot : MonoBehaviour
     public string GetJSON()
     {
         return jsonData;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (character == null) return;
+
+        transform.DOComplete();
+        transform.DOScale(1.1f, 0.2f);
+        AudioController.Instance.PlayUI(AudioController.SOUND_ID.ACTION_HOVER);
+    }
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (character == null) return;
+
+        transform.DOComplete();
+        transform.DOScale(1f, 0.2f);
     }
 }
 

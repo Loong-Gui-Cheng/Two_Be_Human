@@ -14,10 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   resistance: 1
-  effectPrefab: {fileID: 0}
-  Name: Bash
   icon: {fileID: 21300000, guid: 5603a5db8418bf547a1e8c7abdc6a11b, type: 3}
+  Name: Bash
   description: 
   baseCoinPower: 8
   incrementCoinPower: 12
-  coins: 1
+  onUseEffect: {fileID: 0}
+  coins:
+  - infliction:
+    - trigger: 0
+      status: {fileID: 11400000, guid: e43b2c75a2f3a9a4fbb072c147523e99, type: 2}
+      potency: 3
+      count: 3
+    gain:
+    - trigger: 0
+      status: {fileID: 11400000, guid: d5f6a524e7331474ba00121db879ffb4, type: 2}
+      potency: 3
+      count: 2
+    description: '<color=green>[On Hit]</color> Inflict 3 <color=red>Burn</color>
+      and +3 <color=red>Burn</color> Count
+
+      <color=green>[On Hit]</color> Gain
+      3 <color=red>Attack Up</color> and +2 <color=red>Attack Up</color> Count
+
+'

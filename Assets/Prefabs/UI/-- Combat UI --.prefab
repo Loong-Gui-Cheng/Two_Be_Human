@@ -1330,6 +1330,8 @@ MonoBehaviour:
   enemyGroup: {fileID: 0}
   enemyPrefab: {fileID: 2835150811077377351, guid: 4e1bcfbf0ce809f47862eb44cd420959, type: 3}
   actionDicePrefab: {fileID: 3172759872348408657, guid: b7cdca1e04a54cc479f710c7d10afb8c, type: 3}
+  statusPrefab: {fileID: 4100664836705916059, guid: 4dd64a19cb786d74c907ca46273cb612, type: 3}
+  statusAppearUIPrefab: {fileID: 1365797645005374168, guid: 52f60953746e1af4fbbe1f12812652ec, type: 3}
   turnCounter: 1
   totalDice: 0
   onFieldEnemies: []
@@ -1349,7 +1351,6 @@ MonoBehaviour:
   combatSystem: {fileID: 1468649452855828031}
   actionUICanvas: {fileID: 4760478906038842395}
   memberUIGroup: {fileID: 7761551915044173731}
-  memberUIPrefab: {fileID: 23651117595908119, guid: 8a4742b53c2ce3043945adeccd5103c6, type: 3}
   turnNo_TMP: {fileID: 4006283579390482915}
   battleUI: {fileID: 7809083737120988788}
   battleCanvas: {fileID: 6755650774669692489}

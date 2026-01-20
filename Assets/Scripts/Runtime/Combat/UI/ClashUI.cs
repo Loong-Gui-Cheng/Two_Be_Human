@@ -33,7 +33,7 @@ public class ClashUI : MonoBehaviour
         if (allySlot.skillData != null)
         {
             aMin = allySlot.skillData.baseCoinPower;
-            aMax = aMin + (allySlot.skillData.incrementCoinPower * allySlot.skillData.coins);
+            aMax = aMin + (allySlot.skillData.incrementCoinPower * allySlot.skillData.coins.Count);
             allySkillUI.SetupUI(allySlot, aMin, aMax);
             SetupMultiplierUI(allySlot, enemySlot);
 
@@ -50,7 +50,7 @@ public class ClashUI : MonoBehaviour
         if (enemySlot.skillData != null)
         {
             bMin = enemySlot.skillData.baseCoinPower;
-            bMax = bMin + (enemySlot.skillData.incrementCoinPower * enemySlot.skillData.coins);
+            bMax = bMin + (enemySlot.skillData.incrementCoinPower * enemySlot.skillData.coins.Count);
             enemySkillUI.SetupUI(enemySlot, bMin, bMax);
             SetupMultiplierUI(enemySlot, allySlot);
 

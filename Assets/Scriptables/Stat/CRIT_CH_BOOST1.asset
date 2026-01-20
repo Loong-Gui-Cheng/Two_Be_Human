@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5c968f44da9c7845bdab94737ffab04, type: 3}
+  m_Name: CRIT_CH_BOOST1
+  m_EditorClassIdentifier: Assembly-CSharp::StatData
+  type: 5
+  icon: {fileID: 2479859038873092282, guid: a3aa77abe63a1b64d8ffa554c5918a86, type: 3}
+  backgroundColor: {r: 0.7294118, g: 0.7058824, b: 0.19215687, a: 1}
+  backgroundColorUnlockable: {r: 0.36862746, g: 0.3529412, b: 0.078431375, a: 1}

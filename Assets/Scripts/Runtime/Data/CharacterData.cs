@@ -18,15 +18,27 @@ public class CharacterData : ScriptableObject
     public ID id;
     public string Name;
     public int position;
+    public Sprite portrait;
 
     [Header("Base Stats")]
     public int Level;
     public float EXP;
     public float RequiredEXP;
+    public int BaseMaxHP;
+    public int BaseATK;
+    public int BaseDEF;
+    public float BaseCritChance = 0.1f;
+    public int Base_BaseCoinBoost;
+    public int Base_IncrementCoinBoost;
+
+    [Header("Tabulated Stats")]
     public float MaxHP;
     public float HP;
     public float ATK;
     public float DEF;
+    public float CritChance;
+    public int BaseCoinBoost;
+    public int IncrementCoinBoost;
 
     [Header("Base Speed Range")]
     [Range(1, 6)] public int minSPD;
@@ -37,12 +49,6 @@ public class CharacterData : ScriptableObject
     [Range(0.5f, 2f)] public float pierceResist;
     [Range(0.5f, 2f)] public float bluntResist;
     [Range(0.5f, 2f)] public float magicResist;
-
-    [Header("Party Abilities")]
-    public int slot;
-
-    [Header("Sprite Work")]
-    public Sprite portrait;
 
     [Header("Skills")]
     public List<SkillData> skills;
@@ -55,6 +61,19 @@ public class CharacterData : ScriptableObject
 
     public void OnLoad(System.IO.BinaryReader binaryReader)
     {
+    }
+    public void RecalculateStat()
+    {
+        // Reset to base first, then change accordingly.
+        MaxHP = BaseMaxHP;
+        ATK = BaseATK;
+        DEF = BaseDEF;
+        CritChance = BaseCritChance;
+        BaseCoinBoost = Base_BaseCoinBoost;
+        IncrementCoinBoost = Base_IncrementCoinBoost;
+
+        if (weapon != null) ATK += weapon.statPoint;
+        if (armour != null) DEF += armour.statPoint;
     }
     public void OnValidate()
     {
@@ -78,5 +97,6 @@ public class CharacterData : ScriptableObject
         }
 
         RequiredEXP = 100f * (1.25f) * (Level - 1);
+        RecalculateStat();
     }
 }

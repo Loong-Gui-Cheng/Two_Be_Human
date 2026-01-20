@@ -207,7 +207,7 @@ public class CombatUISystem : MonoBehaviour
 
             if (skillGO.TryGetComponent(out SkillButtonUI skill))
             {
-                skill.SetupSkill(skillData);
+                skill.SetupSkill(skillData, i + 1);
                 skill.button.onClick.AddListener(() => { SelectSkill(skill); });
                 skills.Add(skill);
             }
@@ -255,8 +255,6 @@ public class CombatUISystem : MonoBehaviour
         int index = FindActionIndex(currentSlot.GetID());
         if (index >= 0) playerActions.RemoveAt(index);
 
-        // ***************************
-        // ERROR CLASH UI (UNEQUIP)
         clashUI.UpdateUI(currentSlot, currentSlot.targetSlot);
     }
     private void SelectSkill(SkillButtonUI skill)

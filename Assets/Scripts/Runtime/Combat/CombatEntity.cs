@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class CombatEntity : MonoBehaviour
@@ -17,11 +18,15 @@ public class CombatEntity : MonoBehaviour
     }
 
     [Header("Runtime (Stat)")]
+    public float BaseMaxHP;
+    public float BaseATK;
+    public float BaseDEF;
+
     public float MaxHP;
     public float HP;
     public float ATK;
     public float DEF;
-    public float criticalChance = 0.1f;
+    public float criticalChance;
 
     [Header("Runtime (Resistances)")]
     public float slashResist;
@@ -29,10 +34,18 @@ public class CombatEntity : MonoBehaviour
     public float pierceResist;
     public float magicResist;
 
+    [Header("Runtime (Status Effects)")]
+    public Transform transformStatusDOT;
+    public RectTransform transformStatusAppear;
+    public RectTransform statusGroup;
+    public List<Status> statusList;
+    public Dictionary<StatusData.TYPE, Status> statusDictionary = new();
+
     [Header("User Interface (UI)")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private RectTransform damageGroup;
     [SerializeField] private GameObject damageUIPrefab;
+
     public HPUI hpUI;
     public CoinUI coinUI;
 
@@ -92,7 +105,7 @@ public class CombatEntity : MonoBehaviour
         bluntResist = input.bluntResist;
         pierceResist = input.pierceResist;
         magicResist = input.magicResist;
-        criticalChance = 0.1f;
+        criticalChance = input.CritChance;
     }
 
     public void AnimateCharacter(Animation_ID id)

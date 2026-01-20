@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   resistance: 0
-  effectPrefab: {fileID: 0}
-  Name: Downward Swing
   icon: {fileID: 21300000, guid: bbcc1b61e0e8ab64e9d61751268127cc, type: 3}
+  Name: Downward Swing
   description: 
   baseCoinPower: 4
   incrementCoinPower: 7
-  coins: 1
+  coins:
+  - infliction: []
+    gain: []
+  effectPrefab: {fileID: 0}
